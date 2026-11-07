@@ -5,7 +5,8 @@
 -- security-definer functions that check auth.uid() themselves.
 -- =====================================================================
 
-create extension if not exists pgcrypto;
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;
 
 -- ---------- helpers ----------
 create or replace function public.today_local() returns date
@@ -148,7 +149,7 @@ create policy "events delete own or admin" on public.events for delete to authen
 -- The check-in secret lives in its own table without any policy: only RPCs read it.
 create table public.event_secrets (
   event_id uuid primary key references public.events(id) on delete cascade,
-  secret text not null default encode(gen_random_bytes(12), 'hex')
+  secret text not null default encode(extensions.gen_random_bytes(12), 'hex')
 );
 alter table public.event_secrets enable row level security;
 
@@ -529,7 +530,7 @@ $$;
 
 create or replace function public.rotate_checkin_code(p_event uuid) returns void
 language sql security definer set search_path = public as $$
-  update public.event_secrets set secret = encode(gen_random_bytes(12), 'hex')
+  update public.event_secrets set secret = encode(extensions.gen_random_bytes(12), 'hex')
   where event_id = p_event and exists (select 1 from public.events e where e.id = p_event and (e.creator_id = auth.uid() or public.is_admin()))
 $$;
 
