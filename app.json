@@ -1,21 +1,39 @@
 {
   "expo": {
-    "name": "mosh-app",
-    "slug": "mosh-app",
+    "name": "Mosh",
+    "slug": "mosh",
+    "scheme": "mosh",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "backgroundColor": "#EFE9DE",
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "at.mosh.app",
+      "buildNumber": "1",
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "Mosh nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
+        "NSPhotoLibraryUsageDescription": "Mosh braucht Zugriff auf deine Fotos für dein Profilbild, Eventbilder und Beiträge."
+      }
     },
     "android": {
+      "package": "at.mosh.app",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#3ED08B",
         "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
+      "permissions": [
+        "CAMERA"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ],
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -27,11 +45,64 @@
       "expo-sqlite",
       "expo-image",
       "expo-video",
-      "expo-font",
-      "expo-splash-screen",
       "expo-sharing",
       "expo-web-browser",
-      "expo-localization"
-    ]
+      "expo-localization",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Anton-Regular.ttf",
+            "./assets/fonts/Archivo-Regular.ttf",
+            "./assets/fonts/Archivo-Medium.ttf",
+            "./assets/fonts/Archivo-SemiBold.ttf",
+            "./assets/fonts/Archivo-Bold.ttf",
+            "./assets/fonts/IBMPlexMono-Regular.ttf",
+            "./assets/fonts/IBMPlexMono-SemiBold.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 220,
+          "backgroundColor": "#EFE9DE",
+          "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Mosh nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Mosh braucht Zugriff auf deine Fotos für dein Profilbild, Eventbilder und Beiträge.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#3ED08B",
+          "defaultChannel": "default"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    }
   }
 }
