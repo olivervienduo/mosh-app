@@ -1,6 +1,7 @@
 import { File } from 'expo-file-system';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
+import { Platform } from 'react-native';
 import { supabase } from './supabase';
 
 type Bucket = 'avatars' | 'events' | 'posts';
@@ -35,6 +36,12 @@ async function shrink(p: Picked, max: number) {
   return { uri: out.uri, width: out.width, height: out.height };
 }
 
+/** Reads a picked/processed file. expo-file-system has no File class on web, so use fetch there. */
+async function readBytes(uri: string) {
+  if (Platform.OS === 'web') return new Uint8Array(await (await fetch(uri)).arrayBuffer());
+  return new File(uri).bytes();
+}
+
 const rand = () => Math.random().toString(36).slice(2, 10);
 
 /** Uploads into `<bucket>/<userId>/...` and returns the storage path. */
@@ -43,14 +50,14 @@ export async function upload(bucket: Bucket, userId: string, p: Picked, maxPx = 
     if ((p.size ?? 0) > 50 * 1024 * 1024) throw new Error('Das Video ist größer als 50 MB. Bitte kürze es.');
     const ext = p.mime === 'video/quicktime' ? 'mov' : 'mp4';
     const path = `${userId}/${Date.now()}-${rand()}.${ext}`;
-    const bytes = await new File(p.uri).bytes();
+    const bytes = await readBytes(p.uri);
     const { error } = await supabase.storage.from(bucket).upload(path, bytes, { contentType: p.mime ?? 'video/mp4' });
     if (error) throw error;
     return { path, width: p.width, height: p.height };
   }
   const s = await shrink(p, maxPx);
   const path = `${userId}/${Date.now()}-${rand()}.jpg`;
-  const bytes = await new File(s.uri).bytes();
+  const bytes = await readBytes(s.uri);
   const { error } = await supabase.storage.from(bucket).upload(path, bytes, { contentType: 'image/jpeg' });
   if (error) throw error;
   return { path, width: s.width, height: s.height };

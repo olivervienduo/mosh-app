@@ -3,10 +3,11 @@ import { File, Paths } from 'expo-file-system';
 import { router } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useState } from 'react';
-import { Alert, Linking, ScrollView, Text, View } from 'react-native';
+import { Linking, Platform, ScrollView, Text, View } from 'react-native';
 import { useToast } from '@/components/ReportSheet';
 import { Avatar, Btn, H, MenuRow, Mono, P, Sheet, T, Toggle, TopBar } from '@/components/ui';
 import { useAuth, useMe } from '@/lib/auth';
+import { confirmAction } from '@/lib/confirm';
 import { SUPPORT_EMAIL } from '@/lib/constants';
 import { range } from '@/lib/dates';
 import { useFocusLoad } from '@/lib/events';
@@ -65,7 +66,16 @@ export default function Settings() {
     try {
       const { data: json, error } = await supabase.rpc('export_my_data');
       if (error) throw error;
-      const f = new File(Paths.cache, `moshchat-daten-${new Date().toISOString().slice(0, 10)}.json`);
+      const name = `moshchat-daten-${new Date().toISOString().slice(0, 10)}.json`;
+      if (Platform.OS === 'web') {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' }));
+        a.download = name;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        return;
+      }
+      const f = new File(Paths.cache, name);
       if (f.exists) f.delete();
       f.create();
       f.write(JSON.stringify(json, null, 2));
@@ -82,10 +92,7 @@ export default function Settings() {
     await signOut();
     router.replace('/welcome');
   };
-  const confirmSignOut = () => Alert.alert('Abmelden?', 'Du kannst dich jederzeit wieder mit deiner E-Mail anmelden.', [
-    { text: 'Abbrechen', style: 'cancel' },
-    { text: 'Abmelden', style: 'destructive', onPress: async () => { await signOut(); router.replace('/welcome'); } },
-  ]);
+  const confirmSignOut = () => confirmAction('Abmelden?', 'Du kannst dich jederzeit wieder mit deiner E-Mail anmelden.', 'Abmelden', async () => { await signOut(); router.replace('/welcome'); });
   const n = me.notify;
   const version = Constants.expoConfig?.version ?? '1.0.0';
 

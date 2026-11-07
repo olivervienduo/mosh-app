@@ -1,9 +1,10 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useToast } from '@/components/ReportSheet';
 import { Btn, Empty, Mono, P, Segmented, T, TopBar } from '@/components/ui';
 import { useMe } from '@/lib/auth';
+import { confirmAction } from '@/lib/confirm';
 import { ago, range } from '@/lib/dates';
 import { useFocusLoad } from '@/lib/events';
 import { errorText, supabase } from '@/lib/supabase';
@@ -36,10 +37,7 @@ export default function Admin() {
     const { error } = await supabase.from('reports').update({ status: 'done' }).eq('id', id);
     if (error) toast.show(errorText(error)); else reload();
   };
-  const confirm = (title: string, run: () => Promise<{ error: unknown } | void>) => Alert.alert(title, 'Das kann nicht rückgängig gemacht werden.', [
-    { text: 'Abbrechen', style: 'cancel' },
-    { text: 'Löschen', style: 'destructive', onPress: async () => { const r = await run(); if (r && r.error) toast.show(errorText(r.error)); else { toast.show('Erledigt.'); reload(); } } },
-  ]);
+  const confirm = (title: string, run: () => Promise<{ error: unknown } | void>) => confirmAction(title, 'Das kann nicht rückgängig gemacht werden.', 'Löschen', async () => { const r = await run(); if (r && r.error) toast.show(errorText(r.error)); else { toast.show('Erledigt.'); reload(); } });
   const removeContent = (r: Report) => confirm('Inhalt löschen?', async () => {
     if (r.target_comment) await supabase.from('comments').delete().eq('id', r.target_comment);
     if (r.target_post) await supabase.from('posts').delete().eq('id', r.target_post);
