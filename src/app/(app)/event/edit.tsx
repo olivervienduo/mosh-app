@@ -2,7 +2,6 @@ import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { Halftone } from '@/components/EventCard';
 import { Btn, Field, H, Loading, Mono, P, Pill, Row, Rule, Screen, Sheet, T, TopBar } from '@/components/ui';
 import { useMe } from '@/lib/auth';
 import { CATEGORIES, PALETTE, cat } from '@/lib/constants';
