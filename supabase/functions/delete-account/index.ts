@@ -5,8 +5,20 @@
 // All rows cascade from auth.users -> profiles -> everything else.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+// Works with the legacy service_role key and the new sb_secret_ keys.
+function serviceKey(): string {
+  const legacy = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (legacy) return legacy;
+  const many = Deno.env.get('SUPABASE_SECRET_KEYS');
+  if (many) {
+    const keys = JSON.parse(many) as Record<string, string>;
+    return keys.default ?? Object.values(keys)[0];
+  }
+  return Deno.env.get('SUPABASE_SECRET_KEY')!;
+}
+
 const url = Deno.env.get('SUPABASE_URL')!;
-const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+const admin = createClient(url, serviceKey(), { auth: { persistSession: false } });
 const cors = {
   'access-control-allow-origin': '*',
   'access-control-allow-headers': 'authorization, x-client-info, apikey, content-type',

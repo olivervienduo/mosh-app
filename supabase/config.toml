@@ -5,4 +5,4 @@ project_id = "moshchat"
 verify_jwt = false   # called by database webhooks, protected by WEBHOOK_SECRET
 
 [functions.delete-account]
-verify_jwt = true
+verify_jwt = false  # the function checks the user token itself (works with new JWT signing keys)

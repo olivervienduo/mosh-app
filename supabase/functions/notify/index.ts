@@ -10,11 +10,23 @@
 // Webhook: add HTTP header  x-webhook-secret: <same string>
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+// Works with the legacy service_role key and the new sb_secret_ keys.
+function serviceKey(): string {
+  const legacy = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (legacy) return legacy;
+  const many = Deno.env.get('SUPABASE_SECRET_KEYS');
+  if (many) {
+    const keys = JSON.parse(many) as Record<string, string>;
+    return keys.default ?? Object.values(keys)[0];
+  }
+  return Deno.env.get('SUPABASE_SECRET_KEY')!;
+}
+
 type Payload = { type: 'INSERT' | 'UPDATE' | 'DELETE'; table: string; schema: string; record: Record<string, unknown> };
 type Push = { to: string; title: string; body: string; data: { url: string }; sound: 'default'; channelId: 'default' };
 type Kind = 'messages' | 'matches' | 'likes' | 'events';
 
-const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+const db = createClient(Deno.env.get('SUPABASE_URL')!, serviceKey(), { auth: { persistSession: false } });
 const MODE: Record<string, string> = { friends: 'Freunde', date: 'Date', business: 'Business' };
 
 async function recipients(userIds: string[], kind: Kind) {

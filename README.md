@@ -70,7 +70,7 @@ cp .env.example .env      # dann .env mit deinen Werten füllen
 
 ```bash
 npx supabase functions deploy notify --no-verify-jwt
-npx supabase functions deploy delete-account
+npx supabase functions deploy delete-account --no-verify-jwt
 npx supabase secrets set WEBHOOK_SECRET=$(openssl rand -hex 24)   # Wert notieren
 ```
 
