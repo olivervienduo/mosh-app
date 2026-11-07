@@ -1,4 +1,4 @@
-// Mosh design tokens: paper background, ink lines, bold event colours.
+// MOSHCHAT design tokens: paper background, ink lines, bold event colours.
 export const C = {
   paper: '#EFE9DE',
   paper2: '#E3DCCE',

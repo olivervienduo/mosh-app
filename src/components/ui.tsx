@@ -40,7 +40,7 @@ export function TopBar({ title, back = false, right, brand }: { title?: string; 
       <View style={s.top}>
         {back && <IconBtn name="back" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} label="Zurück" />}
         {brand
-          ? <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 8 }}><H size={30}>MOSH</H>{title ? <Mono style={{ color: C.muted }}>/ {title}</Mono> : null}</View>
+          ? <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 8 }}><H size={30}>MOSHCHAT</H>{title ? <Mono style={{ color: C.muted }}>/ {title}</Mono> : null}</View>
           : <Text numberOfLines={1} style={[T.mono(13), { flex: 1 }]}>{title}</Text>}
         {right}
       </View>
@@ -212,7 +212,7 @@ export const s = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: 3, borderColor: C.ink, minHeight: 62 },
   iconBtn: { borderWidth: BORDER, borderColor: C.ink, borderRadius: 4, alignItems: 'center', justifyContent: 'center' },
   btn: { borderWidth: BORDER, borderColor: C.ink, borderRadius: 4, paddingVertical: 14, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center', flex: 1 },
-  btnSmall: { paddingVertical: 8, flex: 0, paddingHorizontal: 14 },
+  btnSmall: { paddingVertical: 8, flexGrow: 0, flexShrink: 0, flexBasis: 'auto', paddingHorizontal: 14 },
   pill: { borderWidth: BORDER, borderColor: C.ink, borderRadius: 999, paddingVertical: 8, paddingHorizontal: 14 },
   chip: { borderWidth: 2, borderColor: C.ink, borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start' },
   seg: { flexDirection: 'row', borderWidth: BORDER, borderColor: C.ink, borderRadius: 999, overflow: 'hidden', backgroundColor: C.white },

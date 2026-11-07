@@ -8,7 +8,7 @@ export type Picked = { uri: string; type: 'image' | 'video'; width?: number; hei
 
 export async function pick(opts: { video?: boolean; multiple?: boolean; square?: boolean } = {}): Promise<Picked[]> {
   const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (!perm.granted) throw new Error('Mosh braucht Zugriff auf deine Fotos. Du kannst ihn in den Einstellungen deines Handys erlauben.');
+  if (!perm.granted) throw new Error('MOSHCHAT braucht Zugriff auf deine Fotos. Du kannst ihn in den Einstellungen deines Handys erlauben.');
   const res = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: opts.video ? ['images', 'videos'] : ['images'],
     allowsEditing: !!opts.square && !opts.multiple,

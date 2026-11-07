@@ -71,7 +71,7 @@ ok('recipient marks read but cannot edit body', msg.body === 'Hallo!' && msg.rea
 
 // check-in
 const code = (await as(A, `select event_checkin_code($1) c`, [ev.id])).rows[0].c;
-ok('organiser gets code', code && code.startsWith('mosh://checkin/'));
+ok('organiser gets code', code && code.startsWith('moshchat://checkin/'));
 ok('others get no code', (await as(B, `select event_checkin_code($1) c`, [ev.id])).rows[0].c === null);
 const secret = code.split('/').pop();
 fail = false; try { await as(B, `select check_in($1,'wrong')`, [ev.id]); } catch { fail = true; }

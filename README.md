@@ -1,4 +1,4 @@
-# Mosh
+# MOSHCHAT
 
 Leute über Events kennenlernen – als Freunde, für ein Date oder fürs Business.
 iOS- und Android-App mit Expo (React Native) und Supabase. Komplett gratis, ohne Werbung, ohne In-App-Käufe.
@@ -47,12 +47,12 @@ Du brauchst: einen Computer mit [Node.js 20+](https://nodejs.org), ein Handy, ei
    - Oder mit CLI: `npx supabase login`, `npx supabase link --project-ref <REF>`, `npx supabase db push`.
 3. **Login per Code**: Authentication → **Email Templates** → „Magic Link“ und „Confirm signup“: den Text so ändern, dass der Code drinsteht, z. B.
    ```html
-   <h2>Dein Mosh-Code</h2>
+   <h2>Dein MOSHCHAT-Code</h2>
    <p style="font-size:32px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p>
    <p>Gib den Code in der App ein. Er gilt 1 Stunde.</p>
    ```
 4. **E-Mail-Versand**: Supabase verschickt im Gratis-Tarif nur wenige Mails pro Stunde. Für den Launch unter Authentication → **SMTP Settings** einen eigenen Versand eintragen. Gratis-Optionen: [Resend](https://resend.com) (3.000 Mails/Monat) oder [Brevo](https://brevo.com) (300/Tag). Absender z. B. `hallo@deine-domain.at`.
-5. Authentication → **URL Configuration**: Site URL `mosh://` eintragen.
+5. Authentication → **URL Configuration**: Site URL `moshchat://` eintragen.
 6. Project Settings → **API Keys**: die **Project URL** und den **Publishable key** kopieren.
 
 ### 2. App konfigurieren
@@ -90,7 +90,7 @@ Optional Test-Events anlegen: `supabase/seed.sql` ausführen.
 
 ### 5. Auf dem Handy testen
 
-Mosh nutzt Kamera, Push und Video – dafür braucht es einen **Development Build** (Expo Go reicht nicht):
+MOSHCHAT nutzt Kamera, Push und Video – dafür braucht es einen **Development Build** (Expo Go reicht nicht):
 
 ```bash
 npm install -g eas-cli
@@ -122,4 +122,4 @@ npm run test:db         # Datenbank-Tests (34 Prüfungen, ohne Server)
 
 **Sicherheit**: Jede Tabelle hat Row Level Security. Heikle Abläufe (Swipen, Matches, Check-in, Feed, Statistik, Daten-Export) laufen über geprüfte Datenbank-Funktionen. Geburtsdatum und Einstellungen anderer sind nie lesbar, nur das Alter. Nachrichten sehen nur die beiden im Match. Fotos werden nur in den eigenen Ordner hochgeladen.
 
-**Kosten im Betrieb**: Supabase Free (500 MB Datenbank, 1 GB Dateien, 50.000 aktive Nutzer/Monat), Expo Push gratis, EAS Free. Wenn Mosh wächst: Supabase Pro 25 USD/Monat. Achtung: Gratis-Projekte pausieren nach 7 Tagen ohne Aktivität.
+**Kosten im Betrieb**: Supabase Free (500 MB Datenbank, 1 GB Dateien, 50.000 aktive Nutzer/Monat), Expo Push gratis, EAS Free. Wenn MOSHCHAT wächst: Supabase Pro 25 USD/Monat. Achtung: Gratis-Projekte pausieren nach 7 Tagen ohne Aktivität.

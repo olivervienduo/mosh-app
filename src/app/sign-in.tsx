@@ -47,7 +47,7 @@ export default function SignIn() {
     <>
       <TopBar back title="Anmelden" />
       <Screen>
-        <H size={40}>{sent ? 'Code eingeben' : 'Wie lautet deine E-Mail?'}</H>
+        <H size={40}>{sent ? 'Code eingeben' : 'Deine E-Mail'}</H>
         <P muted>{sent ? `Wir haben dir einen Code an ${email.trim()} geschickt. Schau auch im Spam-Ordner nach.` : 'Wir schicken dir einen Code. Kein Passwort nötig.'}</P>
         {!sent ? (
           <>
@@ -61,7 +61,7 @@ export default function SignIn() {
             <Text style={[T.body(13), { color: C.muted }]}>
               Mit dem Fortfahren akzeptierst du die{' '}
               <Text style={{ textDecorationLine: 'underline' }} onPress={() => LEGAL_URLS.terms && Linking.openURL(LEGAL_URLS.terms)}>Nutzungsbedingungen</Text> und die{' '}
-              <Text style={{ textDecorationLine: 'underline' }} onPress={() => LEGAL_URLS.privacy && Linking.openURL(LEGAL_URLS.privacy)}>Datenschutzerklärung</Text>. Mosh ist ab 18.
+              <Text style={{ textDecorationLine: 'underline' }} onPress={() => LEGAL_URLS.privacy && Linking.openURL(LEGAL_URLS.privacy)}>Datenschutzerklärung</Text>. MOSHCHAT ist ab 18.
             </Text>
             <Text onPress={() => setPw(pw === null ? '' : null)} style={[T.body(13), { color: C.muted, textDecorationLine: 'underline' }]}>
               {pw === null ? 'Mit Passwort anmelden' : 'Lieber mit Code anmelden'}

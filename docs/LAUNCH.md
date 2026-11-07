@@ -14,8 +14,8 @@ Google verlangt bei neuen privaten Konten einen **geschlossenen Test mit mindest
 
 ## Vor dem ersten Build
 
-- [ ] `app.json`: `ios.bundleIdentifier` und `android.package` auf deine Domain ändern (z. B. `at.deinefirma.mosh`). **Später nicht mehr änderbar.**
-- [ ] Name „Mosh“ markenrechtlich prüfen (EUIPO/ÖPA-Recherche) und im App Store verfügbar? Sonst Untertitel ergänzen, z. B. „Mosh – Events & Leute“.
+- [ ] `app.json`: `ios.bundleIdentifier` und `android.package` auf deine Domain ändern (z. B. `at.deinefirma.moshchat`). **Später nicht mehr änderbar.**
+- [ ] Name „MOSHCHAT“ markenrechtlich prüfen (EUIPO/ÖPA-Recherche) und im App Store verfügbar? Sonst Untertitel ergänzen, z. B. „MOSHCHAT – Events & Leute“.
 - [ ] `eas init` ausführen (füllt `extra.eas.projectId`).
 - [ ] Umgebungsvariablen in EAS für `production` anlegen (siehe README).
 - [ ] Impressum in `src/app/(app)/legal.tsx` ausfüllen; Datenschutz und AGB aus `docs/legal/` anpassen und auf deiner Website veröffentlichen.
@@ -40,15 +40,15 @@ Prüfer bekommen keine Mails. Lege deshalb in Supabase → Authentication → Us
 Melde dich einmal selbst damit an, schließ das Onboarding ab und tritt dem Test-Event bei. Lege 2–3 weitere Testkonten an, die das Demo-Konto liken, damit Prüfer Swipen, Match und Chat sehen.
 
 **Hinweis für die Prüfer (Review Notes):**
-> Mosh is a free app to meet people at events. Sign in with the demo account: tap “Mit Passwort anmelden”, email: review@…, password: …. To test check-in, scan the QR code attached as a screenshot (or open Event → “Check-in-Code” as organiser). All content is user-generated; users can report and block from every profile, chat, post and comment (⋯ menu). Account deletion: Profil → ⚙ → Konto löschen.
+> MOSHCHAT is a free app to meet people at events. Sign in with the demo account: tap “Mit Passwort anmelden”, email: review@…, password: …. To test check-in, scan the QR code attached as a screenshot (or open Event → “Check-in-Code” as organiser). All content is user-generated; users can report and block from every profile, chat, post and comment (⋯ menu). Account deletion: Profil → ⚙ → Konto löschen.
 
 Leg einen Screenshot des Check-in-QR-Codes vom Test-Event bei.
 
-## Apple-Richtlinien, die Mosh betreffen
+## Apple-Richtlinien, die MOSHCHAT betreffen
 
 - **1.2 User Generated Content**: Melden, Blockieren, Community-Regeln und Moderation sind eingebaut (Admin-Bereich). Reagiere auf Meldungen innerhalb von 24 h.
 - **5.1.1(v) Konto löschen**: in der App möglich.
-- **Altersfreigabe**: Im Fragebogen „Dating/Unrestricted Web Access“ ehrlich beantworten → Mosh wird 18+ (Dating-Funktion). Google Play: IARC-Fragebogen, Zielgruppe 18+.
+- **Altersfreigabe**: Im Fragebogen „Dating/Unrestricted Web Access“ ehrlich beantworten → MOSHCHAT wird 18+ (Dating-Funktion). Google Play: IARC-Fragebogen, Zielgruppe 18+.
 - **4.3 Spam (Dating-Apps)**: Apple ist bei Dating-Apps streng. Betone im Text das Event-Konzept und die drei Modi.
 
 ## App-Datenschutz (App Store) / Datensicherheit (Google Play)
@@ -70,12 +70,12 @@ Google zusätzlich: Daten werden **verschlüsselt übertragen** (HTTPS) und Nutz
 
 ### Deutsch
 
-**Name:** Mosh
+**Name:** MOSHCHAT
 **Untertitel (30):** Leute treffen auf Events
-**Werbetext (170):** Du gehst auf ein Konzert, Festival oder eine Messe? Mit Mosh lernst du dort Leute kennen – als Freunde, für ein Date oder fürs Business. Gratis.
+**Werbetext (170):** Du gehst auf ein Konzert, Festival oder eine Messe? Mit MOSHCHAT lernst du dort Leute kennen – als Freunde, für ein Date oder fürs Business. Gratis.
 
 **Beschreibung:**
-Mosh verbindet Menschen, die auf dieselben Events gehen.
+MOSHCHAT verbindet Menschen, die auf dieselben Events gehen.
 
 Tritt einem Event bei – Konzert, Festival, Party, Ball, Messe, Konferenz oder Sportevent – und sieh, wer noch hingeht. Wisch nach rechts, wenn du jemanden kennenlernen willst. Wenn ihr euch beide mögt, ist es ein Match und ihr könnt chatten.
 
@@ -83,7 +83,7 @@ DREI MODI, EIN PROFIL
 Freunde, Date oder Business: Du entscheidest, wofür du da bist – auch alles gleichzeitig. Für jeden Modus zeigst du einen eigenen Satz.
 
 LIVE AM EVENT
-Scann am Einlass den Mosh-Code und sieh, wer gerade wirklich da ist. Schlag einen Treffpunkt vor: an der Bar, vor der Bühne, in der Pause.
+Scann am Einlass den MOSHCHAT-Code und sieh, wer gerade wirklich da ist. Schlag einen Treffpunkt vor: an der Bar, vor der Bühne, in der Pause.
 
 AUCH DANACH
 Events bleiben auffindbar. Lern die Leute vom letzten Konzert auch noch nächste Woche kennen.
@@ -92,7 +92,7 @@ NEWS VOM VERANSTALTER
 Im Feed posten nur offizielle Veranstalter: Line-up, Zeitplan, Umfragen, Fotos und Videos.
 
 FÜR ALLE
-Pronomen, nicht-binär, „offen für alle“ – Mosh ist für jede und jeden gemacht.
+Pronomen, nicht-binär, „offen für alle“ – MOSHCHAT ist für jede und jeden gemacht.
 
 SICHER
 Melden und Blockieren überall, Profil pausieren, Altersbereich, Sicherheitstipps.
@@ -105,15 +105,15 @@ Keine Abos, keine Werbung, keine In-App-Käufe. Ab 18.
 ### English
 
 **Subtitle:** Meet people at events
-**Promotional text:** Going to a concert, festival or trade fair? Mosh helps you meet people there – as friends, for a date or for business. Free.
+**Promotional text:** Going to a concert, festival or trade fair? MOSHCHAT helps you meet people there – as friends, for a date or for business. Free.
 
 **Description:**
-Mosh connects people who go to the same events.
+MOSHCHAT connects people who go to the same events.
 
 Join an event – concert, festival, party, ball, trade fair, conference or sports – and see who else is going. Swipe right if you want to meet someone. If you both like each other, it’s a match and you can chat.
 
 THREE MODES, ONE PROFILE – Friends, Date or Business. Pick one or all of them, with a different line for each.
-LIVE AT THE EVENT – Scan the Mosh code at the entrance and see who is actually there right now. Suggest a meeting point.
+LIVE AT THE EVENT – Scan the MOSHCHAT code at the entrance and see who is actually there right now. Suggest a meeting point.
 AFTERWARDS TOO – Past events stay searchable.
 ORGANISER NEWS – Only official organisers post in the feed: line-ups, schedules, polls, photos and videos.
 FOR EVERYONE – Pronouns, non-binary, “open to everyone”.

@@ -67,7 +67,7 @@ export default function EventDetail() {
             {e.description ? <P style={{ marginTop: 14 }}>{e.description}</P> : null}
             {e.partner_place && e.partner_deal ? (
               <View style={{ marginTop: 14, backgroundColor: C.white, borderWidth: 2, borderColor: C.ink, borderRadius: 12, padding: 12 }}>
-                <Mono size={11}>Mosh-Deal · {e.partner_place}</Mono><P>{e.partner_deal}</P>
+                <Mono size={11}>MOSHCHAT-Deal · {e.partner_place}</Mono><P>{e.partner_deal}</P>
               </View>
             ) : null}
 
@@ -116,7 +116,7 @@ export default function EventDetail() {
                   <Btn title="Check-in-Code" onPress={() => router.push({ pathname: '/event/qr', params: { id: e.id } })} />
                   <Btn title="Bearbeiten" onPress={() => router.push({ pathname: '/event/edit', params: { id: e.id } })} />
                 </View>
-                {!e.official && !me.is_admin && <P muted style={{ fontSize: 14 }}>Das Häkchen „Offiziell“ vergibt das Mosh-Team, nachdem es geprüft hat, dass du der echte Veranstalter bist. Schreib uns dafür über Einstellungen → Hilfe.</P>}
+                {!e.official && !me.is_admin && <P muted style={{ fontSize: 14 }}>Das Häkchen „Offiziell“ vergibt das MOSHCHAT-Team, nachdem es geprüft hat, dass du der echte Veranstalter bist. Schreib uns dafür über Einstellungen → Hilfe.</P>}
                 {me.is_admin && <Toggle value={e.official} onChange={setOfficial} title="Offiziell (Admin)" sub="Nur nach Prüfung des Veranstalters" />}
               </View>
             )}

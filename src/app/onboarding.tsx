@@ -16,15 +16,16 @@ import { C } from '@/lib/theme';
 export default function Onboarding() {
   const { session, profile, updateProfile, refreshProfile } = useAuth();
   const [step, setStep] = useState(1);
-  const [draft, setDraft] = useState<Profile | null>(profile);
+  const withColor = (p: Profile) => ({ ...p, color: p.color === '#D8CDBB' ? AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)] : p.color });
+  const [draft, setDraft] = useState<Profile | null>(() => (profile ? withColor(profile) : null));
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [events, setEvents] = useState<EventRow[] | null>(null);
   const [joined, setJoined] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (profile && !draft) setDraft({ ...profile, color: profile.color === '#D8CDBB' ? AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)] : profile.color });
-  }, [profile, draft]);
+    if (profile && !draft) setDraft(withColor(profile));
+  }, [profile, draft]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (step !== 3) return;
     const today = new Date().toISOString().slice(0, 10);
@@ -42,7 +43,7 @@ export default function Onboarding() {
     setErr('');
     if (step === 1) {
       if (!draft.name.trim()) return setErr('Bitte gib deinen Vornamen ein.');
-      if (!draft.birthdate) return setErr('Bitte gib deinen Geburtstag ein. Mosh ist ab 18.');
+      if (!draft.birthdate) return setErr('Bitte gib deinen Geburtstag ein. MOSHCHAT ist ab 18.');
     }
     if (step === 2) { const m = modeError(draft); if (m) return setErr(m); }
     setBusy(true);
@@ -73,7 +74,7 @@ export default function Onboarding() {
     <View style={{ flex: 1, backgroundColor: C.paper }}>
       <SafeAreaView edges={['top']}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, borderBottomWidth: 3, borderColor: C.ink }}>
-          {step > 1 ? <IconBtn name="back" label="Zurück" onPress={() => setStep(step - 1)} /> : <H size={28}>MOSH</H>}
+          {step > 1 ? <IconBtn name="back" label="Zurück" onPress={() => setStep(step - 1)} /> : <H size={28}>MOSHCHAT</H>}
           <View style={{ flex: 1, flexDirection: 'row', gap: 6 }}>
             {[1, 2, 3].map((i) => <View key={i} style={{ flex: 1, height: 6, borderRadius: 3, backgroundColor: i <= step ? C.ink : 'rgba(21,20,19,0.18)' }} />)}
           </View>

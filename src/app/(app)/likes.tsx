@@ -8,7 +8,7 @@ import { errorText, supabase } from '@/lib/supabase';
 import type { LikeRow } from '@/lib/types';
 import { C } from '@/lib/theme';
 
-/** Who liked me (free for everyone in Mosh). Like back for an instant match. */
+/** Who liked me (free for everyone in MOSHCHAT). Like back for an instant match. */
 export default function Likes() {
   const [err, setErr] = useState('');
   const { data, setData } = useFocusLoad(async () => ((await supabase.rpc('get_likes')).data as LikeRow[]) ?? [], []);
@@ -36,8 +36,8 @@ export default function Likes() {
                 <Text style={T.display(22)}>{l.name}, {l.age}</Text>
                 {l.event_title ? <Mono size={10}>{l.event_title}</Mono> : null}
                 <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
-                  <Btn small title="✕" onPress={() => answer(l, false)} style={{ flex: 1 }} />
-                  <Btn small solid title="♥" onPress={() => answer(l, true)} style={{ flex: 1 }} />
+                  <Btn small title="✕" onPress={() => answer(l, false)} style={{ flexGrow: 1, flexBasis: 0 }} />
+                  <Btn small solid title="♥" onPress={() => answer(l, true)} style={{ flexGrow: 1, flexBasis: 0 }} />
                 </View>
               </View>
             </View>

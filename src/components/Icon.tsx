@@ -3,7 +3,7 @@ import { C } from '@/lib/theme';
 
 export type IconName = 'back' | 'plus' | 'gear' | 'search' | 'pin' | 'bubble' | 'more' | 'close' | 'heart' | 'chev' | 'undo' | 'qr' | 'camera' | 'send' | 'thumb';
 
-/** Mosh's own thumbs-up: a capsule thumb on a rounded fist. */
+/** MOSHCHAT's own thumbs-up: a capsule thumb on a rounded fist. */
 export function Thumb({ size = 22, fill = C.white, stroke = C.ink, sw = 2 }: { size?: number; fill?: string; stroke?: string; sw?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">

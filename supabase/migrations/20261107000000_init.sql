@@ -1,5 +1,5 @@
 -- =====================================================================
--- Mosh: initial schema
+-- MOSHCHAT: initial schema
 -- Tables, row level security, storage buckets and RPC functions.
 -- Every table has RLS enabled. Sensitive writes go through
 -- security-definer functions that check auth.uid() themselves.
@@ -65,7 +65,7 @@ begin
     new.is_admin := old.is_admin;
   end if;
   if new.birthdate is not null and public.age_of(new.birthdate) < 18 then
-    raise exception 'Mosh ist ab 18.' using errcode = 'check_violation';
+    raise exception 'MOSHCHAT ist ab 18.' using errcode = 'check_violation';
   end if;
   if new.age_min > new.age_max then new.age_max := new.age_min; end if;
   return new;
@@ -97,13 +97,6 @@ language sql stable security definer set search_path = public as $$
   select exists (select 1 from public.blocks where (blocker_id = a and blocked_id = b) or (blocker_id = b and blocked_id = a))
 $$;
 
--- Public view of other people: no birthdate, no settings.
-create view public.public_profiles as
-  select p.id, p.name, public.age_of(p.birthdate) as age, p.job, p.city, p.bio, p.pronouns,
-         p.modes, p.lines, p.tags, p.photo_path, p.color
-  from public.profiles p
-  where p.onboarded and (p.id = auth.uid() or not public.blocked_between(p.id, auth.uid()));
-grant select on public.public_profiles to authenticated;
 
 -- ---------- events ----------
 create table public.events (
@@ -186,7 +179,7 @@ create or replace function public.guard_member() returns trigger
 language plpgsql as $$
 begin
   -- check-ins are only written by public.check_in()
-  if coalesce(current_setting('mosh.checkin', true), '') <> 'on' then
+  if coalesce(current_setting('moshchat.checkin', true), '') <> 'on' then
     if tg_op = 'INSERT' then new.checked_in_on := null; else new.checked_in_on := old.checked_in_on; end if;
   end if;
   return new;
@@ -226,6 +219,20 @@ create table public.matches (
 );
 alter table public.matches enable row level security;
 create policy "own matches" on public.matches for select to authenticated using (auth.uid() in (user_a, user_b));
+
+-- Profile view for people you matched with (and yourself): no birthdate, no gender, no settings.
+-- Everyone else is only reachable through get_deck / get_likes, so profiles can't be scraped.
+create view public.public_profiles as
+  select p.id, p.name, public.age_of(p.birthdate) as age, p.job, p.city, p.bio, p.pronouns,
+         p.modes, p.lines, p.tags, p.photo_path, p.color
+  from public.profiles p
+  where auth.uid() is not null and p.onboarded
+    and (p.id = auth.uid() or (
+      not public.blocked_between(p.id, auth.uid())
+      and exists (select 1 from public.matches m
+                  where (m.user_a = auth.uid() and m.user_b = p.id) or (m.user_b = auth.uid() and m.user_a = p.id))));
+revoke all on public.public_profiles from public, anon;
+grant select on public.public_profiles to authenticated;
 
 create or replace function public.in_match(m uuid) returns boolean
 language sql stable security definer set search_path = public as $$
@@ -498,25 +505,25 @@ begin
   select * into ev from public.events where id = p_event;
   if ev.id is null or not exists (select 1 from public.event_secrets where event_id = p_event and secret = p_secret) then raise exception 'Dieser Code gehört zu keinem Event.'; end if;
   if not public.event_is_live(ev) then raise exception 'Dieses Event läuft heute nicht.'; end if;
-  perform set_config('mosh.checkin', 'on', true);
+  perform set_config('moshchat.checkin', 'on', true);
   insert into public.event_members (event_id, user_id, checked_in_on) values (p_event, auth.uid(), public.today_local())
   on conflict (event_id, user_id) do update set checked_in_on = public.today_local();
-  perform set_config('mosh.checkin', 'off', true);
+  perform set_config('moshchat.checkin', 'off', true);
   return true;
 end $$;
 
 create or replace function public.check_out(p_event uuid) returns void
 language plpgsql security definer set search_path = public as $$
 begin
-  perform set_config('mosh.checkin', 'on', true);
+  perform set_config('moshchat.checkin', 'on', true);
   update public.event_members set checked_in_on = null where event_id = p_event and user_id = auth.uid();
-  perform set_config('mosh.checkin', 'off', true);
+  perform set_config('moshchat.checkin', 'off', true);
 end $$;
 
 -- QR payload for the organiser.
 create or replace function public.event_checkin_code(p_event uuid) returns text
 language sql stable security definer set search_path = public as $$
-  select 'mosh://checkin/' || e.id || '/' || s.secret from public.events e join public.event_secrets s on s.event_id = e.id
+  select 'moshchat://checkin/' || e.id || '/' || s.secret from public.events e join public.event_secrets s on s.event_id = e.id
   where e.id = p_event and (e.creator_id = auth.uid() or public.is_admin())
 $$;
 
@@ -593,7 +600,7 @@ language sql security definer set search_path = public as $$
   delete from public.matches where user_a = least(auth.uid(), p_user) and user_b = greatest(auth.uid(), p_user);
 $$;
 
--- Everything Mosh stores about the caller (GDPR art. 15 / 20).
+-- Everything MOSHCHAT stores about the caller (GDPR art. 15 / 20).
 create or replace function public.export_my_data() returns jsonb
 language sql stable security definer set search_path = public as $$
   select jsonb_build_object(

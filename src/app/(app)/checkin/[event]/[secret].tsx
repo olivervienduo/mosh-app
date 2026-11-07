@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Btn, H, P, Screen, TopBar } from '@/components/ui';
 import { checkIn } from '@/lib/checkin';
 
-/** Opened when someone scans the entrance code with the phone's camera app (mosh://checkin/...). */
+/** Opened when someone scans the entrance code with the phone's camera app (moshchat://checkin/...). */
 export default function CheckinLink() {
   const { event, secret } = useLocalSearchParams<{ event: string; secret: string }>();
   const [err, setErr] = useState<string | null>(null);

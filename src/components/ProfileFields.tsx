@@ -37,7 +37,7 @@ export function BasicFields({ me, onChange, withBio = true }: { me: Profile; onC
     setBday(t);
     const iso = parseInputDate(t);
     if (!iso) { setBErr(t.length >= 8 ? 'Bitte im Format TT.MM.JJJJ.' : ''); return; }
-    if (ageFrom(iso) < 18) { setBErr('Mosh ist ab 18.'); return; }
+    if (ageFrom(iso) < 18) { setBErr('MOSHCHAT ist ab 18.'); return; }
     setBErr(''); onChange({ birthdate: iso });
   };
   return (

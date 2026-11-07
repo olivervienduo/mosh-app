@@ -65,11 +65,11 @@ export default function Settings() {
     try {
       const { data: json, error } = await supabase.rpc('export_my_data');
       if (error) throw error;
-      const f = new File(Paths.cache, `mosh-daten-${new Date().toISOString().slice(0, 10)}.json`);
+      const f = new File(Paths.cache, `moshchat-daten-${new Date().toISOString().slice(0, 10)}.json`);
       if (f.exists) f.delete();
       f.create();
       f.write(JSON.stringify(json, null, 2));
-      if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(f.uri, { mimeType: 'application/json', dialogTitle: 'Deine Mosh-Daten' });
+      if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(f.uri, { mimeType: 'application/json', dialogTitle: 'Deine MOSHCHAT-Daten' });
       else toast.show('Teilen ist auf diesem Gerät nicht verfügbar.');
     } catch (e) { toast.show(errorText(e)); } finally { setBusy(false); }
   };
@@ -132,7 +132,7 @@ export default function Settings() {
         </Section>
 
         <Section title="Hilfe & Rechtliches">
-          <MenuRow title="Hilfe & Kontakt" sub={SUPPORT_EMAIL} onPress={() => Linking.openURL(`mailto:${SUPPORT_EMAIL}?subject=Mosh%20Support`)} />
+          <MenuRow title="Hilfe & Kontakt" sub={SUPPORT_EMAIL} onPress={() => Linking.openURL(`mailto:${SUPPORT_EMAIL}?subject=MOSHCHAT%20Support`)} />
           <MenuRow title="Datenschutz" onPress={() => router.push({ pathname: '/legal', params: { doc: 'privacy' } })} />
           <MenuRow title="Nutzungsbedingungen" onPress={() => router.push({ pathname: '/legal', params: { doc: 'terms' } })} />
           <MenuRow title="Impressum" onPress={() => router.push({ pathname: '/legal', params: { doc: 'imprint' } })} />
@@ -146,12 +146,12 @@ export default function Settings() {
         )}
 
         <Section title="Konto">
-          <MenuRow title="Meine Daten herunterladen" sub="Alles, was Mosh über dich speichert, als Datei" onPress={exportData} />
+          <MenuRow title="Meine Daten herunterladen" sub="Alles, was MOSHCHAT über dich speichert, als Datei" onPress={exportData} />
           <MenuRow title="Abmelden" onPress={confirmSignOut} />
           <MenuRow title="Konto löschen" sub="Endgültig, mit allen Matches und Chats" onPress={() => setDel(true)} danger />
         </Section>
 
-        <Text style={[T.mono(10), { textAlign: 'center', color: C.muted }]}>Mosh {version} · Gratis. Ohne Werbung.</Text>
+        <Text style={[T.mono(10), { textAlign: 'center', color: C.muted }]}>MOSHCHAT {version} · Gratis. Ohne Werbung.</Text>
       </ScrollView>
 
       <Sheet visible={rules} onClose={() => setRules(false)} title="Sicher treffen">
@@ -163,7 +163,7 @@ export default function Settings() {
           ['Bauchgefühl zählt', 'Fühlt sich etwas falsch an, geh. Blockiere und melde, wir prüfen jede Meldung.'],
         ].map(([t, d]) => <View key={t} style={{ gap: 2 }}><Text style={T.semi(17)}>{t}</Text><P muted style={{ fontSize: 15 }}>{d}</P></View>)}
         <H size={22} style={{ marginTop: 8 }}>Community-Regeln</H>
-        <P style={{ fontSize: 15 }}>Mosh ist ab 18. Sei du selbst: echte Fotos, echter Name. Kein Hass, keine Belästigung, keine Nacktbilder, kein Spam, kein Verkauf. Respektiere ein Nein und Pronomen. Verstöße führen zur Sperre.</P>
+        <P style={{ fontSize: 15 }}>MOSHCHAT ist ab 18. Sei du selbst: echte Fotos, echter Name. Kein Hass, keine Belästigung, keine Nacktbilder, kein Spam, kein Verkauf. Respektiere ein Nein und Pronomen. Verstöße führen zur Sperre.</P>
         <P muted style={{ fontSize: 14 }}>In einem Notfall: 112.</P>
       </Sheet>
 

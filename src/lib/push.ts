@@ -15,7 +15,7 @@ export async function registerPush(userId: string) {
   try {
     if (!Device.isDevice) return;
     if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('default', { name: 'Mosh', importance: Notifications.AndroidImportance.HIGH, lightColor: '#3ED08B' });
+      await Notifications.setNotificationChannelAsync('default', { name: 'MOSHCHAT', importance: Notifications.AndroidImportance.HIGH, lightColor: '#3ED08B' });
     }
     const current = await Notifications.getPermissionsAsync();
     let status = current.status;

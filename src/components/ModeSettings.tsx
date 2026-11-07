@@ -57,7 +57,7 @@ function DateBlock({ me, onChange }: { me: Pick<Profile, 'gender' | 'gender_text
         </View>
       )}
       <Text style={[T.body(12), { color: C.muted }]}>
-        Freiwillig. Mit dem Date-Modus willigst du ein, dass Mosh diese Angaben nur zum Abgleich nutzt. Andere sehen sie nicht. Widerruf jederzeit: Date-Modus ausschalten.
+        Freiwillig. Mit dem Date-Modus willigst du ein, dass MOSHCHAT diese Angaben nur zum Abgleich nutzt. Andere sehen sie nicht. Widerruf jederzeit: Date-Modus ausschalten.
       </Text>
     </View>
   );

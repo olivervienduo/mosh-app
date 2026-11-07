@@ -202,7 +202,7 @@ export default function Chat() {
         {o && <MenuRow title={`Profil von ${o.name}`} onPress={() => { setMenu(false); setProfile(true); }} />}
         {ev && <MenuRow title="Zum Event" sub={ev.title} onPress={() => { setMenu(false); router.push({ pathname: '/event/[id]', params: { id: ev.id } }); }} />}
         <MenuRow title="Match auflösen" sub="Der Chat verschwindet für euch beide." onPress={unmatch} />
-        {o && <MenuRow title="Blockieren" sub="Ihr seht euch nirgends mehr in Mosh." onPress={block} danger />}
+        {o && <MenuRow title="Blockieren" sub="Ihr seht euch nirgends mehr in MOSHCHAT." onPress={block} danger />}
         {o && <MenuRow title="Melden" onPress={() => { setMenu(false); setReport(true); }} danger />}
       </Sheet>
       {o && <ReportSheet target={{ user: o.id }} blockToo visible={report} onClose={() => setReport(false)} onDone={() => { setReport(false); router.back(); }} />}

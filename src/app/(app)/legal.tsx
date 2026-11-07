@@ -17,18 +17,18 @@ const DOCS: Record<string, { title: string; url?: string; body: [string, string]
       ['Was andere sehen', 'Andere sehen Vorname, Alter (nicht dein Geburtsdatum), Fotos und Profiltexte. Nachrichten sehen nur du und dein Match. Veranstalter sehen nur Summen, keine Personen.'],
       ['Sensible Angaben', 'Geschlecht und wen du daten möchtest, können Rückschlüsse auf deine sexuelle Orientierung erlauben. Diese Angaben sind freiwillig, nur im Date-Modus nötig und werden ausschließlich zum Abgleich genutzt.'],
       ['Wo die Daten liegen', 'Bei unserem Hosting-Anbieter Supabase in einem Rechenzentrum in der EU. Push-Mitteilungen laufen über Expo, Apple und Google.'],
-      ['Keine Werbung, kein Verkauf', 'Mosh zeigt keine Werbung und verkauft keine Daten. Es gibt kein Tracking durch Dritte.'],
+      ['Keine Werbung, kein Verkauf', 'MOSHCHAT zeigt keine Werbung und verkauft keine Daten. Es gibt kein Tracking durch Dritte.'],
       ['Deine Rechte', 'Du kannst deine Daten jederzeit in den Einstellungen herunterladen, ändern und dein Konto endgültig löschen. Fragen und Beschwerden: ' + SUPPORT_EMAIL + '. Du kannst dich auch bei der Datenschutzbehörde beschweren.'],
     ],
   },
   terms: {
     title: 'Nutzungsbedingungen', url: LEGAL_URLS.terms,
     body: [
-      ['Ab 18', 'Mosh ist nur für Menschen ab 18 Jahren.'],
-      ['Gratis', 'Mosh ist kostenlos. Es gibt keine Abos und keine In-App-Käufe.'],
+      ['Ab 18', 'MOSHCHAT ist nur für Menschen ab 18 Jahren.'],
+      ['Gratis', 'MOSHCHAT ist kostenlos. Es gibt keine Abos und keine In-App-Käufe.'],
       ['Echt sein', 'Nutze deinen echten Vornamen und Fotos, die dich zeigen. Ein Konto pro Person.'],
       ['Respekt', 'Keine Belästigung, kein Hass, keine Nacktbilder, kein Spam, keine Werbung, keine illegalen Inhalte. Wir können Inhalte löschen und Konten sperren.'],
-      ['Events', 'Wer ein Event anlegt, ist für die Angaben verantwortlich. Mosh verkauft keine Tickets und ist nicht Veranstalter.'],
+      ['Events', 'Wer ein Event anlegt, ist für die Angaben verantwortlich. MOSHCHAT verkauft keine Tickets und ist nicht Veranstalter.'],
       ['Treffen', 'Treffen finden auf eigene Verantwortung statt. Lies unsere Sicherheitstipps.'],
     ],
   },
@@ -43,7 +43,7 @@ const DOCS: Record<string, { title: string; url?: string; body: [string, string]
     title: 'Open-Source-Lizenzen',
     body: [
       ['Schriften', 'Anton, Archivo und IBM Plex Mono stehen unter der SIL Open Font License 1.1.'],
-      ['Software', 'Mosh nutzt React Native, Expo, Supabase und weitere Open-Source-Pakete unter MIT-, Apache-2.0- und BSD-Lizenzen.'],
+      ['Software', 'MOSHCHAT nutzt React Native, Expo, Supabase und weitere Open-Source-Pakete unter MIT-, Apache-2.0- und BSD-Lizenzen.'],
     ],
   },
 };

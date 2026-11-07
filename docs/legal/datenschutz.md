@@ -1,4 +1,4 @@
-# Datenschutzerklärung für die App „Mosh“ (Vorlage)
+# Datenschutzerklärung für die App „MOSHCHAT“ (Vorlage)
 
 > **Vorlage – vor Veröffentlichung von einer Fachperson prüfen lassen.** Platzhalter in [eckigen Klammern] ausfüllen. Diese Vorlage ist keine Rechtsberatung.
 
@@ -51,7 +51,7 @@ Beschwerden: [E-Mail] oder bei der Aufsichtsbehörde, in Österreich der **Daten
 
 ## 7. Mindestalter
 
-Mosh ist nur für Personen ab 18 Jahren.
+MOSHCHAT ist nur für Personen ab 18 Jahren.
 
 ## 8. Sicherheit
 

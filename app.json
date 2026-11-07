@@ -1,25 +1,25 @@
 {
   "expo": {
-    "name": "Mosh",
-    "slug": "mosh",
-    "scheme": "mosh",
+    "name": "MOSHCHAT",
+    "slug": "moshchat",
+    "scheme": "moshchat",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "backgroundColor": "#EFE9DE",
     "ios": {
-      "bundleIdentifier": "at.mosh.app",
+      "bundleIdentifier": "at.moshchat.app",
       "buildNumber": "1",
       "supportsTablet": false,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "Mosh nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
-        "NSPhotoLibraryUsageDescription": "Mosh braucht Zugriff auf deine Fotos für dein Profilbild, Eventbilder und Beiträge."
+        "NSCameraUsageDescription": "MOSHCHAT nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
+        "NSPhotoLibraryUsageDescription": "MOSHCHAT braucht Zugriff auf deine Fotos für dein Profilbild, Eventbilder und Beiträge."
       }
     },
     "android": {
-      "package": "at.mosh.app",
+      "package": "at.moshchat.app",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#EFE9DE",
@@ -74,7 +74,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Mosh nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
+          "cameraPermission": "MOSHCHAT nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
           "microphonePermission": false,
           "recordAudioAndroid": false,
           "barcodeScannerEnabled": true
@@ -83,7 +83,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Mosh braucht Zugriff auf deine Fotos für dein Profilbild, Eventbilder und Beiträge.",
+          "photosPermission": "MOSHCHAT braucht Zugriff auf deine Fotos für dein Profilbild, Eventbilder und Beiträge.",
           "cameraPermission": false,
           "microphonePermission": false
         }

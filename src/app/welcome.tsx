@@ -18,7 +18,7 @@ export default function Welcome() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: C.paper }}>
       <View style={{ flex: 1, padding: 20, gap: 22, justifyContent: 'center' }}>
-        <H size={30}>MOSH</H>
+        <H size={30}>MOSHCHAT</H>
         <View style={{ flexDirection: 'row', gap: 10, flexWrap: 'wrap' }}>
           {MODE_KEYS.map((k, i) => (
             <View key={k} style={{ backgroundColor: MODES[k].color, borderWidth: 2.5, borderColor: C.ink, borderRadius: 999, paddingVertical: 6, paddingHorizontal: 16, transform: [{ rotate: `${[-5, 3, -2][i]}deg` }] }}>
@@ -27,7 +27,7 @@ export default function Welcome() {
           ))}
         </View>
         <H size={58}>Triff deine Leute auf Events.</H>
-        <P>Mosh verbindet Menschen, die zum selben Konzert, Festival, Spiel oder zur selben Messe gehen. Als Freunde, als Date oder beruflich.</P>
+        <P>MOSHCHAT verbindet Menschen, die zum selben Konzert, Festival, Spiel oder zur selben Messe gehen. Als Freunde, als Date oder beruflich.</P>
         <View>
           <Rule />
           {STEPS.map(([h, d], i) => (

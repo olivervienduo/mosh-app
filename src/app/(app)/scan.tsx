@@ -21,7 +21,7 @@ export default function Scan() {
   const onScan = async (data: string) => {
     if (state !== 'scan') return;
     const c = parseCheckin(data);
-    if (!c) { setState('error'); setMsg('Das ist kein Mosh-Check-in-Code.'); return; }
+    if (!c) { setState('error'); setMsg('Das ist kein MOSHCHAT-Check-in-Code.'); return; }
     setState('busy');
     const e = await checkIn(c.event, c.secret);
     if (e) { setState('error'); setMsg(e); return; }
@@ -46,7 +46,7 @@ export default function Scan() {
       ) : !perm.granted ? (
         <Screen>
           <H size={30}>Kamera erlauben</H>
-          <P>Zum Einchecken scannst du den QR-Code am Einlass. Dafür braucht Mosh einmalig Zugriff auf die Kamera.</P>
+          <P>Zum Einchecken scannst du den QR-Code am Einlass. Dafür braucht MOSHCHAT einmalig Zugriff auf die Kamera.</P>
           {perm.canAskAgain ? <Btn solid title="Zugriff erlauben" onPress={requestPerm} style={{ flex: 0 }} />
             : <Btn solid title="Einstellungen öffnen" onPress={() => Linking.openSettings()} style={{ flex: 0 }} />}
         </Screen>

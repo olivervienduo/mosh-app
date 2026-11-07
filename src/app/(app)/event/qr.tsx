@@ -27,14 +27,14 @@ export default function EventQr() {
       <TopBar back title="Check-in-Code" />
       <Screen>
         <H size={34}>Einlass-Code</H>
-        <P>Häng diesen Code am Einlass auf oder zeig ihn am Handy. Gäste scannen ihn in Mosh und sind damit eingecheckt. Nur wer eingecheckt ist, erscheint als „gerade hier“.</P>
+        <P>Häng diesen Code am Einlass auf oder zeig ihn am Handy. Gäste scannen ihn in MOSHCHAT und sind damit eingecheckt. Nur wer eingecheckt ist, erscheint als „gerade hier“.</P>
         <View style={{ alignItems: 'center', backgroundColor: e?.color ?? C.white, borderRadius: 30, borderWidth: 2.5, borderColor: C.ink, padding: 22, gap: 14 }}>
           <Text style={T.display(26)}>{e?.title ?? ''}</Text>
           <View style={{ backgroundColor: C.white, padding: 16, borderRadius: 16, borderWidth: 2.5, borderColor: C.ink }}>
             {code ? <QRCode value={code} size={230} color={C.ink} backgroundColor={C.white} /> : <View style={{ width: 230, height: 230 }} />}
           </View>
           <Mono>{e ? longDate(e) : ''}</Mono>
-          <Text style={T.display(20)}>Mit Mosh scannen und einchecken</Text>
+          <Text style={T.display(20)}>Mit MOSHCHAT scannen und einchecken</Text>
         </View>
         <Row>
           <Btn title="Teilen" onPress={() => code && Share.share({ message: `Check-in für ${e?.title}: ${code}` })} />

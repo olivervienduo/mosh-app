@@ -1,4 +1,4 @@
-// Mosh push notifications.
+// MOSHCHAT push notifications.
 //
 // Called by Supabase Database Webhooks on INSERT into
 //   public.messages, public.matches, public.swipes, public.posts
@@ -56,7 +56,7 @@ async function handle(p: Payload) {
     const recipient = m.user_a === r.sender_id ? m.user_b : m.user_a;
     const { data: sender } = await db.from('profiles').select('name').eq('id', r.sender_id).single();
     const body = r.kind === 'meet' ? 'hat einen Treffpunkt vorgeschlagen 📍' : String(r.body ?? '').slice(0, 140);
-    await send(to(await recipients([recipient], 'messages'), sender?.name ?? 'Mosh', body, `/chat/${r.match_id}`));
+    await send(to(await recipients([recipient], 'messages'), sender?.name ?? 'MOSHCHAT', body, `/chat/${r.match_id}`));
   }
 
   if (p.table === 'matches') {
@@ -85,7 +85,7 @@ async function handle(p: Payload) {
     const text = String(r.body ?? '').trim();
     for (let i = 0; i < ids.length; i += 500) {
       const tokens = await recipients(ids.slice(i, i + 500), 'events');
-      await send(to(tokens, ev?.title ?? 'Mosh', text ? text.slice(0, 140) : 'Neuer Beitrag im Feed', `/post/${r.id}`));
+      await send(to(tokens, ev?.title ?? 'MOSHCHAT', text ? text.slice(0, 140) : 'Neuer Beitrag im Feed', `/post/${r.id}`));
     }
   }
 }
