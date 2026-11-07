@@ -1,7 +1,6 @@
-import { Redirect, Stack } from 'expo-router';
-import { useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import { router } from 'expo-router';
+import { Redirect, router, Stack } from 'expo-router';
+import { useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
 import { registerPush } from '@/lib/push';
 import { C } from '@/lib/theme';

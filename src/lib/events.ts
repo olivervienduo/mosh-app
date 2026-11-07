@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { isoDay } from './dates';
 import { supabase } from './supabase';
@@ -51,10 +51,12 @@ export function useFocusLoad<T>(load: () => Promise<T>, deps: unknown[]) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const loader = useRef(load);
+  useEffect(() => { loader.current = load; });
+  const key = JSON.stringify(deps);
   const run = useCallback(async () => {
-    try { setData(await load()); setError(''); } catch (e) { setError((e as Error).message); } finally { setLoading(false); }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+    try { setData(await loader.current()); setError(''); } catch (e) { setError((e as Error).message); } finally { setLoading(false); }
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
   useFocusEffect(useCallback(() => { run(); }, [run]));
   return { data, setData, error, loading, reload: run };
 }

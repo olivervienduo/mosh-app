@@ -1,0 +1,8 @@
+# Minimal config for the Supabase CLI (supabase link / db push / functions deploy).
+project_id = "mosh"
+
+[functions.notify]
+verify_jwt = false   # called by database webhooks, protected by WEBHOOK_SECRET
+
+[functions.delete-account]
+verify_jwt = true

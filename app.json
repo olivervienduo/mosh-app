@@ -22,7 +22,7 @@
       "package": "at.mosh.app",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#3ED08B",
+        "backgroundColor": "#EFE9DE",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },

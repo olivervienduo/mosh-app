@@ -35,13 +35,14 @@ export default function Chats() {
   const [older, setOlder] = useState(false);
   const { data, loading, reload } = useFocusLoad(async () => {
     const [chats, likes] = await Promise.all([supabase.rpc('get_chats'), supabase.rpc('get_likes')]);
-    return { chats: (chats.data as ChatRow[]) ?? [], likes: (likes.data as LikeRow[]) ?? [] };
+    return { chats: (chats.data as ChatRow[]) ?? [], likes: (likes.data as LikeRow[]) ?? [], now: Date.now() };
   }, []);
   const chats = data?.chats ?? [];
   const fresh = chats.filter((c) => !c.last_body && c.last_kind === null);
   const talks = chats.filter((c) => c.last_kind !== null);
-  const recent = talks.filter((c) => Date.now() - new Date(c.last_message_at).getTime() < WEEK);
-  const old = talks.filter((c) => Date.now() - new Date(c.last_message_at).getTime() >= WEEK);
+  const now = data?.now ?? 0;
+  const recent = talks.filter((c) => now - new Date(c.last_message_at).getTime() < WEEK);
+  const old = talks.filter((c) => now - new Date(c.last_message_at).getTime() >= WEEK);
   const likes = data?.likes ?? [];
 
   return (

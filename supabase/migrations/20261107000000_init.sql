@@ -100,7 +100,7 @@ $$;
 -- Public view of other people: no birthdate, no settings.
 create view public.public_profiles as
   select p.id, p.name, public.age_of(p.birthdate) as age, p.job, p.city, p.bio, p.pronouns,
-         p.gender, p.modes, p.lines, p.tags, p.photo_path, p.color
+         p.modes, p.lines, p.tags, p.photo_path, p.color
   from public.profiles p
   where p.onboarded and (p.id = auth.uid() or not public.blocked_between(p.id, auth.uid()));
 grant select on public.public_profiles to authenticated;

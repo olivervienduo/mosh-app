@@ -101,7 +101,7 @@ ok('stats only for organiser', fail);
 // profile privacy & admin guard
 ok('cannot read other profile row', (await as(B, `select * from profiles where id=$1`, [A])).rows.length === 0);
 const pub = (await as(B, `select * from public_profiles where id=$1`, [A])).rows[0];
-ok('public profile has age, no birthdate', pub && pub.age >= 18 && !('birthdate' in pub));
+ok('public profile has age, no birthdate or gender', pub && pub.age >= 18 && !('birthdate' in pub) && !('gender' in pub));
 await as(B, `update profiles set is_admin=true where id=$1`, [B]);
 ok('cannot make self admin', (await db.query('select is_admin from profiles where id=$1', [B])).rows[0].is_admin === false);
 fail = false; try { await as(B, `update profiles set birthdate='2015-01-01' where id=$1`, [B]); } catch { fail = true; }

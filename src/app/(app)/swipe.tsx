@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Modal, PanResponder, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '@/components/Icon';
@@ -25,7 +25,7 @@ export default function Swipe() {
   const [last, setLast] = useState<{ id: string; mode: Mode; matched: boolean } | null>(null);
   const [match, setMatch] = useState<{ id: string; p: DeckCard } | null>(null);
   const [err, setErr] = useState('');
-  const pos = useRef(new Animated.ValueXY()).current;
+  const [pos] = useState(() => new Animated.ValueXY());
   const busy = useRef(false);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Swipe() {
     if (!top || busy.current) return;
     busy.current = true;
     Haptics.selectionAsync().catch(() => {});
-    Animated.timing(pos, { toValue: { x: liked ? 520 : -520, y: 30 }, duration: 220, useNativeDriver: true }).start(async () => {
+    Animated.timing(pos, { toValue: { x: liked ? 520 : -520, y: 30 }, duration: 220, useNativeDriver: false }).start(async () => {
       setDeck((d) => (d ? d.slice(1) : d));
       pos.setValue({ x: 0, y: 0 });
       busy.current = false;
@@ -63,15 +63,19 @@ export default function Swipe() {
     setLast(null); load();
   };
 
-  const pan = useMemo(() => PanResponder.create({
+  // Latest decide() for the gesture handlers (created once).
+  const decideRef = useRef(decide);
+  useEffect(() => { decideRef.current = decide; }, [decide]);
+  // eslint-disable-next-line react-hooks/refs -- refs are read inside gesture callbacks, not during render
+  const [pan] = useState(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_e, g) => Math.abs(g.dx) > 8,
     onPanResponderMove: Animated.event([null, { dx: pos.x, dy: pos.y }], { useNativeDriver: false }),
     onPanResponderRelease: (_e, g) => {
-      if (g.dx > 110) decide(true);
-      else if (g.dx < -110) decide(false);
-      else Animated.spring(pos, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
+      if (g.dx > 110) decideRef.current(true);
+      else if (g.dx < -110) decideRef.current(false);
+      else Animated.spring(pos, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start();
     },
-  }), [decide, pos]);
+  }));
 
   const rotate = pos.x.interpolate({ inputRange: [-300, 0, 300], outputRange: ['-16deg', '0deg', '16deg'] });
   const yes = pos.x.interpolate({ inputRange: [0, 110], outputRange: [0, 1], extrapolate: 'clamp' });
