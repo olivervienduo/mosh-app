@@ -8,9 +8,10 @@ import { longDate } from '@/lib/dates';
 import { supabase } from '@/lib/supabase';
 import type { EventRow } from '@/lib/types';
 import { C } from '@/lib/theme';
+import { featureGate } from '@/components/FeatureGate';
 
 /** Organiser view: the QR code guests scan at the entrance. */
-export default function EventQr() {
+function EventQr() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [code, setCode] = useState<string | null>(null);
   const [e, setE] = useState<EventRow | null>(null);
@@ -49,3 +50,6 @@ export default function EventQr() {
     </>
   );
 }
+
+// Hidden while FEATURES.checkin is off (see src/lib/features.ts).
+export default featureGate('checkin', EventQr);

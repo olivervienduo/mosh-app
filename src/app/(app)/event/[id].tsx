@@ -8,6 +8,7 @@ import { useMe } from '@/lib/auth';
 import { MODES, cat } from '@/lib/constants';
 import { ago, days, isLive, isPast, longDate, multi, range, until } from '@/lib/dates';
 import { fetchEvent, fetchPeople, joinEvent, leaveEvent, useFocusLoad } from '@/lib/events';
+import { FEATURES } from '@/lib/features';
 import { errorText, supabase } from '@/lib/supabase';
 import type { FeedPost } from '@/lib/types';
 import { C } from '@/lib/theme';
@@ -23,7 +24,7 @@ export default function EventDetail() {
   const { data, loading, reload, setData } = useFocusLoad(async () => {
     const [e, people, posts] = await Promise.all([
       fetchEvent(id), fetchPeople(id),
-      supabase.rpc('get_feed', { p_event: id, p_limit: 1 }).then((r) => (r.data as FeedPost[]) ?? []),
+      FEATURES.feed ? supabase.rpc('get_feed', { p_event: id, p_limit: 1 }).then((r) => (r.data as FeedPost[]) ?? []) : Promise.resolve([] as FeedPost[]),
     ]);
     return { e, people, last: posts[0] ?? null };
   }, [id]);
@@ -71,7 +72,7 @@ export default function EventDetail() {
               </View>
             ) : null}
 
-            {isLive(e) && (
+            {FEATURES.checkin && isLive(e) && (
               <View style={{ marginTop: 16, backgroundColor: C.white, borderWidth: 2.5, borderColor: C.ink, borderRadius: 20, padding: 14, gap: 10 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}><LivePill /><Mono>{p?.here ?? 0} gerade hier</Mono></View>
                 {p && p.here_faces.length > 0 && <Faces people={p.here_faces} border={C.white} />}
@@ -80,7 +81,7 @@ export default function EventDetail() {
               </View>
             )}
 
-            {data?.last && joined && (
+            {FEATURES.feed && data?.last && joined && (
               <>
                 <Dash style={{ marginVertical: 14 }} />
                 <Mono size={11}>✓ Vom Veranstalter · {ago(data.last.created_at)}</Mono>
@@ -106,18 +107,20 @@ export default function EventDetail() {
             {organiser && (
               <View style={{ marginTop: 22, gap: 12 }}>
                 <View style={{ borderBottomWidth: 3, borderColor: C.ink, paddingBottom: 4, flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <H size={22}>Für Veranstalter</H><Mono>{e.official ? '✓ Offiziell' : 'Nicht verifiziert'}</Mono>
+                  <H size={22}>Für Veranstalter</H>{FEATURES.official && <Mono>{e.official ? '✓ Offiziell' : 'Nicht verifiziert'}</Mono>}
                 </View>
+                {(FEATURES.feed || FEATURES.stats) && (
+                  <View style={{ flexDirection: 'row', gap: 12 }}>
+                    {FEATURES.feed && <Btn solid title="Beitrag schreiben" onPress={() => router.push({ pathname: '/event/compose', params: { id: e.id } })} />}
+                    {FEATURES.stats && <Btn title="Statistik" onPress={() => router.push({ pathname: '/event/stats', params: { id: e.id } })} />}
+                  </View>
+                )}
                 <View style={{ flexDirection: 'row', gap: 12 }}>
-                  <Btn solid title="Beitrag schreiben" onPress={() => router.push({ pathname: '/event/compose', params: { id: e.id } })} />
-                  <Btn title="Statistik" onPress={() => router.push({ pathname: '/event/stats', params: { id: e.id } })} />
-                </View>
-                <View style={{ flexDirection: 'row', gap: 12 }}>
-                  <Btn title="Check-in-Code" onPress={() => router.push({ pathname: '/event/qr', params: { id: e.id } })} />
+                  {FEATURES.checkin && <Btn title="Check-in-Code" onPress={() => router.push({ pathname: '/event/qr', params: { id: e.id } })} />}
                   <Btn title="Bearbeiten" onPress={() => router.push({ pathname: '/event/edit', params: { id: e.id } })} />
                 </View>
-                {!e.official && !me.is_admin && <P muted style={{ fontSize: 14 }}>Das Häkchen „Offiziell“ vergibt das MOSHCHAT-Team, nachdem es geprüft hat, dass du der echte Veranstalter bist. Schreib uns dafür über Einstellungen → Hilfe.</P>}
-                {me.is_admin && <Toggle value={e.official} onChange={setOfficial} title="Offiziell (Admin)" sub="Nur nach Prüfung des Veranstalters" />}
+                {FEATURES.official && !e.official && !me.is_admin && <P muted style={{ fontSize: 14 }}>Das Häkchen „Offiziell“ vergibt das MOSHCHAT-Team, nachdem es geprüft hat, dass du der echte Veranstalter bist. Schreib uns dafür über Einstellungen → Hilfe.</P>}
+                {FEATURES.official && me.is_admin && <Toggle value={e.official} onChange={setOfficial} title="Offiziell (Admin)" sub="Nur nach Prüfung des Veranstalters" />}
               </View>
             )}
           </View>

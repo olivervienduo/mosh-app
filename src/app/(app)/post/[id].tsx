@@ -11,10 +11,11 @@ import { ago } from '@/lib/dates';
 import { errorText, supabase } from '@/lib/supabase';
 import type { CommentRow, FeedPost } from '@/lib/types';
 import { C, F } from '@/lib/theme';
+import { featureGate } from '@/components/FeatureGate';
 
 const QUICK = ['🔥', '❤️', '😂', '👏', '🙌', '😮'];
 
-export default function PostDetail() {
+function PostDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const me = useMe();
   const toast = useToast();
@@ -141,3 +142,6 @@ export default function PostDetail() {
     </SafeAreaView>
   );
 }
+
+// Hidden while FEATURES.feed is off (see src/lib/features.ts).
+export default featureGate('feed', PostDetail);

@@ -10,9 +10,10 @@ import { pick, upload, type Picked } from '@/lib/media';
 import { errorText, supabase } from '@/lib/supabase';
 import type { EventRow, Media } from '@/lib/types';
 import { C, F } from '@/lib/theme';
+import { featureGate } from '@/components/FeatureGate';
 
 /** Organiser writes a feed post: text, up to 10 photos/videos, optional poll. */
-export default function Compose() {
+function Compose() {
   const params = useLocalSearchParams<{ id?: string; event?: string }>();
   const eventId = (params.id ?? params.event)!;
   const me = useMe();
@@ -119,3 +120,6 @@ export default function Compose() {
     </View>
   );
 }
+
+// Hidden while FEATURES.feed is off (see src/lib/features.ts).
+export default featureGate('feed', Compose);

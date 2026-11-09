@@ -7,6 +7,7 @@ import { useMe } from '@/lib/auth';
 import { confirmAction } from '@/lib/confirm';
 import { ago, range } from '@/lib/dates';
 import { useFocusLoad } from '@/lib/events';
+import { FEATURES } from '@/lib/features';
 import { errorText, supabase } from '@/lib/supabase';
 import type { EventRow } from '@/lib/types';
 import { C } from '@/lib/theme';
@@ -25,7 +26,9 @@ export default function Admin() {
   const { data, reload } = useFocusLoad(async () => {
     const [r, e] = await Promise.all([
       supabase.rpc('admin_reports'),
-      supabase.from('events').select('*').eq('official', false).order('created_at', { ascending: false }).limit(100),
+      FEATURES.official
+        ? supabase.from('events').select('*').eq('official', false).order('created_at', { ascending: false }).limit(100)
+        : Promise.resolve({ data: [] as EventRow[] }),
     ]);
     if (r.error) throw r.error;
     return { reports: (r.data as Report[]) ?? [], events: (e.data as EventRow[]) ?? [] };
@@ -58,7 +61,9 @@ export default function Admin() {
     <View style={{ flex: 1, backgroundColor: C.paper }}>
       <TopBar back title="Admin" />
       <ScrollView contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: 40 }}>
-        <Segmented options={[{ key: 'reports', label: `Meldungen (${data?.reports.length ?? 0})` }, { key: 'events', label: 'Verifizieren' }]} value={tab} onChange={setTab} />
+        {FEATURES.official
+          ? <Segmented options={[{ key: 'reports', label: `Meldungen (${data?.reports.length ?? 0})` }, { key: 'events', label: 'Verifizieren' }]} value={tab} onChange={setTab} />
+          : <Mono>Meldungen ({data?.reports.length ?? 0})</Mono>}
         {tab === 'reports' && data?.reports.length === 0 && <Empty title="Alles erledigt" text="Keine offenen Meldungen." />}
         {tab === 'reports' && data?.reports.map((r) => (
           <View key={r.id} style={{ borderWidth: 2.5, borderColor: C.ink, borderRadius: 20, backgroundColor: C.white, padding: 14, gap: 8 }}>

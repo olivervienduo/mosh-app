@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { Linking, Pressable, Text, View } from 'react-native';
 import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
 import { cat } from '@/lib/constants';
+import { FEATURES } from '@/lib/features';
 import { days, isLive, isPast, longDate, multi, range, until } from '@/lib/dates';
 import { publicUrl } from '@/lib/supabase';
 import type { EventRow } from '@/lib/types';
@@ -30,8 +31,8 @@ export function EventImage({ e, height = 190 }: { e: EventRow; height?: number }
           <Halftone height={height} />
           <Text style={[T.display(56), { position: 'absolute', left: 18, bottom: 10, backgroundColor: C.white, paddingHorizontal: 8 }]}>{cat(e.category).short ?? cat(e.category).label}</Text>
         </>}
-      {e.official && <View style={{ position: 'absolute', left: 14, top: 14, backgroundColor: C.white, borderWidth: 2, borderColor: C.ink, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3 }}><Text style={T.mono(11)}>✓ Offiziell</Text></View>}
-      {isLive(e) && <View style={{ position: 'absolute', right: 14, top: 14 }}><LivePill /></View>}
+      {FEATURES.official && e.official && <View style={{ position: 'absolute', left: 14, top: 14, backgroundColor: C.white, borderWidth: 2, borderColor: C.ink, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3 }}><Text style={T.mono(11)}>✓ Offiziell</Text></View>}
+      {FEATURES.checkin && isLive(e) && <View style={{ position: 'absolute', right: 14, top: 14 }}><LivePill /></View>}
     </View>
   );
 }
@@ -40,8 +41,8 @@ export type Membership = { joined: boolean; here: boolean };
 
 export function primaryAction(e: EventRow, m: Membership): { title: string; onPress: () => void } {
   if (!m.joined) return { title: isPast(e) ? 'Ich war dabei' : 'Beitreten', onPress: () => router.push({ pathname: '/event/[id]', params: { id: e.id } }) };
-  if (isLive(e) && !m.here) return { title: 'Einchecken', onPress: () => router.push('/scan') };
-  return { title: m.here ? 'Leute hier treffen' : 'Leute treffen', onPress: () => router.push({ pathname: '/swipe', params: { id: e.id } }) };
+  if (FEATURES.checkin && isLive(e) && !m.here) return { title: 'Einchecken', onPress: () => router.push('/scan') };
+  return { title: FEATURES.checkin && m.here ? 'Leute hier treffen' : 'Leute treffen', onPress: () => router.push({ pathname: '/swipe', params: { id: e.id } }) };
 }
 
 export function EventCard({ e, m, onJoin }: { e: EventRow; m: Membership; onJoin?: () => void }) {

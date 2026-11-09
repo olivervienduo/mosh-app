@@ -6,6 +6,7 @@ import { Icon } from '@/components/Icon';
 import { Btn, Empty, Faces, LivePill, Mono, SectionHead, T, TopBar } from '@/components/ui';
 import { useMe } from '@/lib/auth';
 import { isLive, isPast, monthKey, time } from '@/lib/dates';
+import { FEATURES } from '@/lib/features';
 import { fetchEvents, fetchMemberships, fetchPeople, joinEvent, useFocusLoad, type MemberMap } from '@/lib/events';
 import type { EventRow, People } from '@/lib/types';
 import { C, F } from '@/lib/theme';
@@ -45,7 +46,7 @@ export default function Events() {
 
   const { data, loading, reload, error } = useFocusLoad(async () => {
     const [events, mem] = await Promise.all([fetchEvents(q), fetchMemberships(me.id)]);
-    const live = events.filter((e) => mem[e.id] && isLive(e));
+    const live = FEATURES.checkin ? events.filter((e) => mem[e.id] && isLive(e)) : [];
     const people: Record<string, People | null> = {};
     await Promise.all(live.map(async (e) => { people[e.id] = await fetchPeople(e.id); }));
     return { events, mem, live, people };

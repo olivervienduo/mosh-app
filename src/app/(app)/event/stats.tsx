@@ -6,12 +6,13 @@ import { fmtN, parseDay } from '@/lib/dates';
 import { fetchEvent, useFocusLoad } from '@/lib/events';
 import { errorText, supabase } from '@/lib/supabase';
 import { C } from '@/lib/theme';
+import { featureGate } from '@/components/FeatureGate';
 
 type Stats = { joined: number; checked_in: number; matches: number; reactions: number; comments: number; modes: Record<Mode, number>; days: { day: string; n: number }[] };
 const WD = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
 
 /** Organiser statistics. Aggregated only, never individual people. */
-export default function EventStats() {
+function EventStats() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, error, loading } = useFocusLoad(async () => {
     const [e, s] = await Promise.all([fetchEvent(id), supabase.rpc('event_stats', { p_event: id })]);
@@ -72,3 +73,6 @@ export default function EventStats() {
     </View>
   );
 }
+
+// Hidden while FEATURES.stats is off (see src/lib/features.ts).
+export default featureGate('stats', EventStats);

@@ -11,6 +11,7 @@ import { confirmAction } from '@/lib/confirm';
 import { SUPPORT_EMAIL } from '@/lib/constants';
 import { range } from '@/lib/dates';
 import { useFocusLoad } from '@/lib/events';
+import { FEATURES } from '@/lib/features';
 import { errorText, supabase } from '@/lib/supabase';
 import type { EventRow, Profile } from '@/lib/types';
 import { C } from '@/lib/theme';
@@ -103,14 +104,14 @@ export default function Settings() {
         <Section title="Meine Events">
           {data?.events.length === 0 && <P muted style={{ paddingVertical: 8 }}>Du hast noch kein Event erstellt.</P>}
           {data?.events.map((e) => (
-            <MenuRow key={e.id} title={e.title} sub={`${range(e)} · ${e.city}${e.official ? ' · Offiziell ✓' : ''}`} onPress={() => router.push({ pathname: '/event/[id]', params: { id: e.id } })} />
+            <MenuRow key={e.id} title={e.title} sub={`${range(e)} · ${e.city}${FEATURES.official && e.official ? ' · Offiziell ✓' : ''}`} onPress={() => router.push({ pathname: '/event/[id]', params: { id: e.id } })} />
           ))}
           <View style={{ marginTop: 10 }}><Btn title="+ Event erstellen" onPress={() => router.push('/event/edit')} style={{ flex: 0 }} /></View>
         </Section>
 
         <Section title="Sichtbarkeit">
           <Toggle value={me.paused} onChange={(v) => set({ paused: v })} title="Profil pausieren" sub="Niemand sieht dich beim Swipen. Deine Chats bleiben." />
-          <Toggle value={me.live_visible} onChange={(v) => set({ live_visible: v })} title="Als „gerade hier“ zeigen" sub="Nach dem Check-in sehen andere, dass du vor Ort bist." color={C.green} />
+          {FEATURES.checkin && <Toggle value={me.live_visible} onChange={(v) => set({ live_visible: v })} title="Als „gerade hier“ zeigen" sub="Nach dem Check-in sehen andere, dass du vor Ort bist." color={C.green} />}
           <Toggle value={me.read_receipts} onChange={(v) => set({ read_receipts: v })} title="Lesebestätigungen" sub="Zeigt „Gelesen“ unter deinen Nachrichten." />
           <View style={{ flexDirection: 'row', gap: 12, paddingVertical: 12 }}>
             <Stepper label="Alter ab" value={me.age_min} min={18} max={me.age_max} onChange={(v) => set({ age_min: v })} />
@@ -122,7 +123,7 @@ export default function Settings() {
           <Toggle value={n.matches} onChange={(v) => set({ notify: { ...n, matches: v } })} title="Neue Matches" />
           <Toggle value={n.messages} onChange={(v) => set({ notify: { ...n, messages: v } })} title="Nachrichten" />
           <Toggle value={n.likes} onChange={(v) => set({ notify: { ...n, likes: v } })} title="Neue Likes" />
-          <Toggle value={n.events} onChange={(v) => set({ notify: { ...n, events: v } })} title="News von Veranstaltern" />
+          {FEATURES.feed && <Toggle value={n.events} onChange={(v) => set({ notify: { ...n, events: v } })} title="News von Veranstaltern" />}
         </Section>
 
         <Section title="Sicherheit">
@@ -148,7 +149,7 @@ export default function Settings() {
 
         {me.is_admin && (
           <Section title="Admin">
-            <MenuRow title="Meldungen & Freigaben" sub="Gemeldete Inhalte prüfen, Events verifizieren" onPress={() => router.push('/admin')} />
+            <MenuRow title="Meldungen & Freigaben" sub={FEATURES.official ? 'Gemeldete Inhalte prüfen, Events verifizieren' : 'Gemeldete Inhalte prüfen'} onPress={() => router.push('/admin')} />
           </Section>
         )}
 

@@ -8,9 +8,10 @@ import { checkIn, parseCheckin } from '@/lib/checkin';
 import { fetchEvent } from '@/lib/events';
 import type { EventRow } from '@/lib/types';
 import { C } from '@/lib/theme';
+import { featureGate } from '@/components/FeatureGate';
 
 /** Check-in scanner: guests scan the organiser's QR code at the entrance. */
-export default function Scan() {
+function Scan() {
   const { profile, updateProfile } = useAuth();
   const [perm, requestPerm] = useCameraPermissions();
   const focused = useIsFocused();
@@ -66,3 +67,6 @@ export default function Scan() {
     </>
   );
 }
+
+// Hidden while FEATURES.checkin is off (see src/lib/features.ts).
+export default featureGate('checkin', Scan);

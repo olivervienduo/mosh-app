@@ -7,12 +7,13 @@ import { useMe } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import type { FeedPost } from '@/lib/types';
 import { C } from '@/lib/theme';
+import { featureGate } from '@/components/FeatureGate';
 
 type Chip = { key: string; label: string; color: string };
 const PAGE = 20;
 
 /** News from the organisers of the events you joined. Only organisers can post. */
-export default function Feed() {
+function Feed() {
   const me = useMe();
   const params = useLocalSearchParams<{ event?: string }>();
   const [filter, setFilter] = useState<string>(params.event ?? 'all');
@@ -99,3 +100,6 @@ export default function Feed() {
     </View>
   );
 }
+
+// Hidden while FEATURES.feed is off (see src/lib/features.ts).
+export default featureGate('feed', Feed);

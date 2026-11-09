@@ -10,6 +10,7 @@ import { useMe } from '@/lib/auth';
 import { MODES, type Mode } from '@/lib/constants';
 import { isLive } from '@/lib/dates';
 import { fetchEvent } from '@/lib/events';
+import { FEATURES } from '@/lib/features';
 import { errorText, supabase } from '@/lib/supabase';
 import type { DeckCard, EventRow } from '@/lib/types';
 import { C } from '@/lib/theme';
@@ -30,7 +31,7 @@ export default function Swipe() {
 
   useEffect(() => {
     fetchEvent(id).then(setEvent);
-    supabase.rpc('event_people', { p_event: id }).then(({ data }) => setHere(!!(data as { me_here?: boolean })?.me_here));
+    if (FEATURES.checkin) supabase.rpc('event_people', { p_event: id }).then(({ data }) => setHere(!!(data as { me_here?: boolean })?.me_here));
   }, [id]);
 
   const load = useCallback(async () => {
@@ -80,7 +81,7 @@ export default function Swipe() {
   const rotate = pos.x.interpolate({ inputRange: [-300, 0, 300], outputRange: ['-16deg', '0deg', '16deg'] });
   const yes = pos.x.interpolate({ inputRange: [0, 110], outputRange: [0, 1], extrapolate: 'clamp' });
   const no = pos.x.interpolate({ inputRange: [-110, 0], outputRange: [1, 0], extrapolate: 'clamp' });
-  const live = event ? isLive(event) : false;
+  const live = FEATURES.checkin && event ? isLive(event) : false;
 
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>

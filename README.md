@@ -5,6 +5,8 @@ iOS- und Android-App mit Expo (React Native) und Supabase. Komplett gratis, ohne
 
 ## Was die App kann
 
+> **Hinweis:** Feed, QR-Check-in/Live-Modus, „Offiziell“-Abzeichen und Statistik sind gerade **ausgeblendet** (Schalter in `src/lib/features.ts`). Details und wie man sie zurückholt: [docs/SPAETER.md](docs/SPAETER.md).
+
 - **Login ohne Passwort**: E-Mail eingeben, Code aus der Mail eintippen.
 - **Onboarding** in 3 Schritten: Profil (Foto, Vorname, Geburtstag ab 18, Pronomen), Modi (Freunde / Date / Business, je ein eigener Satz), erste Events.
 - **Events**: suchen, nach Monaten blättern, vergangene Events weiter finden, beitreten, mehrtägige Events, Tickets-Link. Eigene Events anlegen mit Kategorie, Farbe (Vorauswahl je Kategorie), Bild, Ort, Datum.

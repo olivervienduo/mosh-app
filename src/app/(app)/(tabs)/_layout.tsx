@@ -3,15 +3,17 @@ import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { T } from '@/components/ui';
+import { FEATURES } from '@/lib/features';
 import { supabase } from '@/lib/supabase';
 import { C } from '@/lib/theme';
 
-const TABS = [
+const ALL_TABS = [
   { name: 'events', label: 'Events' },
   { name: 'feed', label: 'Feed' },
   { name: 'chats', label: 'Chats' },
   { name: 'profile', label: 'Profil' },
 ] as const;
+const TABS = ALL_TABS.filter((t) => t.name !== 'feed' || FEATURES.feed);
 
 function useUnread() {
   const path = usePathname();
@@ -37,13 +39,15 @@ export default function TabsLayout() {
       tabBar={({ state, navigateToTab }) => (
         <View style={{ flexDirection: 'row', borderTopWidth: 3, borderColor: C.ink, backgroundColor: C.paper, paddingBottom: insets.bottom }}>
           {state.routes.map((r, i) => {
-            const t = TABS.find((x) => x.name === r.name) ?? { name: r.name, label: r.name };
+            const t = TABS.find((x) => x.name === r.name);
+            if (!t) return null;
             const active = state.index === i;
+            const first = TABS[0].name === t.name;
             return (
               <Pressable key={t.name} accessibilityRole="tab" accessibilityState={{ selected: active }}
                 onPress={() => navigateToTab(r.key)}
                 style={{ flex: 1, paddingVertical: 16, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 6,
-                  backgroundColor: active ? C.ink : C.paper, borderLeftWidth: i ? 2 : 0, borderColor: C.ink }}>
+                  backgroundColor: active ? C.ink : C.paper, borderLeftWidth: first ? 0 : 2, borderColor: C.ink }}>
                 <Text style={[T.mono(12), { color: active ? C.white : C.ink }]}>{t.label}</Text>
                 {t.name === 'chats' && unread > 0 && (
                   <View style={{ minWidth: 20, height: 20, borderRadius: 10, backgroundColor: C.date, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 5 }}>
@@ -56,7 +60,7 @@ export default function TabsLayout() {
         </View>
       )}
     >
-      {TABS.map((t) => <Tabs.Screen key={t.name} name={t.name} />)}
+      {ALL_TABS.map((t) => <Tabs.Screen key={t.name} name={t.name} />)}
     </Tabs>
   );
 }

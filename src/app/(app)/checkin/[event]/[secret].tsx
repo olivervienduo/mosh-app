@@ -2,9 +2,10 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Btn, H, P, Screen, TopBar } from '@/components/ui';
 import { checkIn } from '@/lib/checkin';
+import { featureGate } from '@/components/FeatureGate';
 
 /** Opened when someone scans the entrance code with the phone's camera app (moshchat://checkin/...). */
-export default function CheckinLink() {
+function CheckinLink() {
   const { event, secret } = useLocalSearchParams<{ event: string; secret: string }>();
   const [err, setErr] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -22,3 +23,6 @@ export default function CheckinLink() {
     </>
   );
 }
+
+// Hidden while FEATURES.checkin is off (see src/lib/features.ts).
+export default featureGate('checkin', CheckinLink);

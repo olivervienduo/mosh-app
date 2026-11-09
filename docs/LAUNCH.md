@@ -40,9 +40,9 @@ Prüfer bekommen keine Mails. Lege deshalb in Supabase → Authentication → Us
 Melde dich einmal selbst damit an, schließ das Onboarding ab und tritt dem Test-Event bei. Lege 2–3 weitere Testkonten an, die das Demo-Konto liken, damit Prüfer Swipen, Match und Chat sehen.
 
 **Hinweis für die Prüfer (Review Notes):**
-> MOSHCHAT is a free app to meet people at events. Sign in with the demo account: tap “Mit Passwort anmelden”, email: review@…, password: …. To test check-in, scan the QR code attached as a screenshot (or open Event → “Check-in-Code” as organiser). All content is user-generated; users can report and block from every profile, chat, post and comment (⋯ menu). Account deletion: Profil → ⚙ → Konto löschen.
+> MOSHCHAT is a free app to meet people at events. Sign in with the demo account: tap “Mit Passwort anmelden”, email: review@…, password: …. All content is user-generated; users can report and block from every profile, chat and event (⋯ menu). Account deletion: Profil → ⚙ → Konto löschen.
 
-Leg einen Screenshot des Check-in-QR-Codes vom Test-Event bei.
+(Solange der Check-in ausgeblendet ist, ist kein QR-Code-Screenshot nötig.)
 
 ## Apple-Richtlinien, die MOSHCHAT betreffen
 
@@ -82,14 +82,21 @@ Tritt einem Event bei – Konzert, Festival, Party, Ball, Messe, Konferenz oder 
 DREI MODI, EIN PROFIL
 Freunde, Date oder Business: Du entscheidest, wofür du da bist – auch alles gleichzeitig. Für jeden Modus zeigst du einen eigenen Satz.
 
+TREFFPUNKT AUSMACHEN
+Schlag im Chat einen Treffpunkt vor: an der Bar, vor der Bühne, in der Pause.
+
+<!-- Ausgeblendet (docs/SPAETER.md), beim Zurückholen wieder aufnehmen:
 LIVE AM EVENT
 Scann am Einlass den MOSHCHAT-Code und sieh, wer gerade wirklich da ist. Schlag einen Treffpunkt vor: an der Bar, vor der Bühne, in der Pause.
+-->
 
 AUCH DANACH
 Events bleiben auffindbar. Lern die Leute vom letzten Konzert auch noch nächste Woche kennen.
 
+<!-- Ausgeblendet (docs/SPAETER.md):
 NEWS VOM VERANSTALTER
 Im Feed posten nur offizielle Veranstalter: Line-up, Zeitplan, Umfragen, Fotos und Videos.
+-->
 
 FÜR ALLE
 Pronomen, nicht-binär, „offen für alle“ – MOSHCHAT ist für jede und jeden gemacht.
@@ -113,9 +120,10 @@ MOSHCHAT connects people who go to the same events.
 Join an event – concert, festival, party, ball, trade fair, conference or sports – and see who else is going. Swipe right if you want to meet someone. If you both like each other, it’s a match and you can chat.
 
 THREE MODES, ONE PROFILE – Friends, Date or Business. Pick one or all of them, with a different line for each.
-LIVE AT THE EVENT – Scan the MOSHCHAT code at the entrance and see who is actually there right now. Suggest a meeting point.
+MEET UP – Suggest a meeting point right in the chat.
+<!-- Hidden for now (docs/SPAETER.md): LIVE AT THE EVENT – Scan the MOSHCHAT code at the entrance and see who is actually there right now. Suggest a meeting point. -->
 AFTERWARDS TOO – Past events stay searchable.
-ORGANISER NEWS – Only official organisers post in the feed: line-ups, schedules, polls, photos and videos.
+<!-- Hidden for now (docs/SPAETER.md): ORGANISER NEWS – Only official organisers post in the feed: line-ups, schedules, polls, photos and videos. -->
 FOR EVERYONE – Pronouns, non-binary, “open to everyone”.
 SAFE – Report and block everywhere, pause your profile, safety tips.
 FREE – No subscriptions, no ads, no in-app purchases. 18+.
@@ -124,7 +132,7 @@ FREE – No subscriptions, no ads, no in-app purchases. 18+.
 
 ### Screenshots
 
-Benötigt: iPhone 6,9" (1320 × 2868) und Android-Telefon (mind. 1080 × 1920), je 3–8 Bilder. Vorschlag: Events-Liste, Event-Detail, Swipen, Match, Chat mit Treffpunkt, Live-Check-in, Feed.
+Benötigt: iPhone 6,9" (1320 × 2868) und Android-Telefon (mind. 1080 × 1920), je 3–8 Bilder. Vorschlag: Events-Liste, Event-Detail, Swipen, Match, Chat mit Treffpunkt, Likes.
 Am einfachsten: auf dem Handy mit den Test-Konten Screenshots machen.
 
 ## Grenzen des Gratis-Betriebs
