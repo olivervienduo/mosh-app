@@ -40,7 +40,7 @@ function Stepper({ label, value, min, max, onChange }: { label: string; value: n
 
 export default function Settings() {
   const me = useMe();
-  const { updateProfile, signOut } = useAuth();
+  const { updateProfile, signOut, session } = useAuth();
   const toast = useToast();
   const [rules, setRules] = useState(false);
   const [del, setDel] = useState(false);
@@ -93,7 +93,7 @@ export default function Settings() {
     await signOut();
     router.replace('/welcome');
   };
-  const confirmSignOut = () => confirmAction('Abmelden?', 'Du kannst dich jederzeit wieder mit deiner E-Mail anmelden.', 'Abmelden', async () => { await signOut(); router.replace('/welcome'); });
+  const confirmSignOut = () => confirmAction('Abmelden?', 'Du kannst dich jederzeit wieder mit deiner E-Mail und deinem Passwort anmelden.', 'Abmelden', async () => { await signOut(); router.replace('/welcome'); });
   const n = me.notify;
   const version = Constants.expoConfig?.version ?? '1.0.0';
 
@@ -154,6 +154,7 @@ export default function Settings() {
         )}
 
         <Section title="Konto">
+          <MenuRow title="Passwort ändern" sub={session?.user.email ?? undefined} onPress={() => router.push('/new-password')} />
           <MenuRow title="Meine Daten herunterladen" sub="Alles, was MOSHCHAT über dich speichert, als Datei" onPress={exportData} />
           <MenuRow title="Abmelden" onPress={confirmSignOut} />
           <MenuRow title="Konto löschen" sub="Endgültig, mit allen Matches und Chats" onPress={() => setDel(true)} danger />

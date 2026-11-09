@@ -36,11 +36,11 @@ Für Android-Submit brauchst du einen Google-Service-Account-Schlüssel (Anleitu
 
 ## Demo-Konto für App Review
 
-Prüfer bekommen keine Mails. Lege deshalb in Supabase → Authentication → Users → **Add user** ein Konto mit Passwort an (z. B. `review@deine-domain.at`), „Auto Confirm“ an. In der App gibt es unter dem E-Mail-Feld „Mit Passwort anmelden“.
+Lege in Supabase → Authentication → Users → **Add user** ein Konto mit Passwort an (z. B. `review@deine-domain.at`), „Auto Confirm“ an. Prüfer melden sich damit ganz normal über „Anmelden“ an.
 Melde dich einmal selbst damit an, schließ das Onboarding ab und tritt dem Test-Event bei. Lege 2–3 weitere Testkonten an, die das Demo-Konto liken, damit Prüfer Swipen, Match und Chat sehen.
 
 **Hinweis für die Prüfer (Review Notes):**
-> MOSHCHAT is a free app to meet people at events. Sign in with the demo account: tap “Mit Passwort anmelden”, email: review@…, password: …. All content is user-generated; users can report and block from every profile, chat and event (⋯ menu). Account deletion: Profil → ⚙ → Konto löschen.
+> MOSHCHAT is a free app to meet people at events. Sign in with the demo account: tap “Anmelden”, email: review@…, password: …. All content is user-generated; users can report and block from every profile, chat and event (⋯ menu). Account deletion: Profil → ⚙ → Konto löschen.
 
 (Solange der Check-in ausgeblendet ist, ist kein QR-Code-Screenshot nötig.)
 

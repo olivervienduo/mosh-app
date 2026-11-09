@@ -57,3 +57,6 @@ export const LEGAL_URLS = {
   privacy: process.env.EXPO_PUBLIC_PRIVACY_URL ?? '',
   terms: process.env.EXPO_PUBLIC_TERMS_URL ?? '',
 };
+
+/** Web version of the app. Links in password-reset mails open here (on every device). */
+export const WEB_URL = (process.env.EXPO_PUBLIC_WEB_URL ?? 'https://olivervienduo.github.io/mosh-app').replace(/\/$/, '');

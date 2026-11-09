@@ -1,6 +1,6 @@
 import './localstorage';
 import { createClient } from '@supabase/supabase-js';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 
 const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const key = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -12,7 +12,8 @@ export const supabase = createClient(url ?? 'https://example.supabase.co', key ?
     storage: localStorage,
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false,
+    // On the web, pick up the session from a password-reset link (#access_token=…&type=recovery).
+    detectSessionInUrl: Platform.OS === 'web',
   },
 });
 

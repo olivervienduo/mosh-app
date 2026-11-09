@@ -13,7 +13,7 @@ Datenschutz-Kontakt: [E-Mail]
 
 | Daten | Zweck | Rechtsgrundlage |
 |---|---|---|
-| E-Mail-Adresse | Anmeldung per Einmal-Code, Kontakt bei Problemen | Vertrag (Art. 6 Abs. 1 lit. b DSGVO) |
+| E-Mail-Adresse | Anmeldung (mit Passwort, das nur verschlüsselt gespeichert wird), Zurücksetzen des Passworts, Kontakt bei Problemen | Vertrag (Art. 6 Abs. 1 lit. b DSGVO) |
 | Profil: Vorname, Geburtsdatum, Fotos, Pronomen, Beruf, Stadt, Texte, Profilfarbe | Darstellung deines Profils für andere; Altersprüfung (18+) | Vertrag |
 | Modi (Freunde/Date/Business), Geschlecht, wen du daten möchtest | Passende Vorschläge | **Ausdrückliche Einwilligung** (Art. 9 Abs. 2 lit. a DSGVO), da Rückschlüsse auf die sexuelle Orientierung möglich sind. Freiwillig, nur im Date-Modus, jederzeit änderbar. |
 | Events, denen du beitrittst; Check-ins am Einlass | Wer zu welchem Event geht, „gerade hier“-Anzeige | Vertrag |
@@ -37,7 +37,7 @@ Wir erfassen **keinen Standort**, nutzen **keine Werbung, kein Tracking und kein
 
 - **Supabase Inc.** (Datenbank, Login, Dateispeicher, Server-Funktionen) – Hosting in der EU (Frankfurt). Auftragsverarbeitungsvertrag nach Art. 28 DSGVO; für etwaige Zugriffe aus den USA: EU-Standardvertragsklauseln / EU-US Data Privacy Framework.
 - **Expo (650 Industries, Inc.)**, **Apple** und **Google** – Zustellung von Push-Mitteilungen (Push-Token und Mitteilungstext).
-- **[E-Mail-Dienst, z. B. Resend / Brevo]** – Versand der Login-Codes.
+- **[E-Mail-Dienst, z. B. Resend / Brevo]** – Versand der Mails zum Zurücksetzen des Passworts.
 
 ## 5. Speicherdauer
 

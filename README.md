@@ -47,14 +47,12 @@ Du brauchst: einen Computer mit [Node.js 20+](https://nodejs.org), ein Handy, ei
 2. **Datenbank aufsetzen** – entweder:
    - Ohne Kommandozeile: Projekt → **SQL Editor** → Inhalt von `supabase/migrations/20261107000000_init.sql` einfügen → **Run**.
    - Oder mit CLI: `npx supabase login`, `npx supabase link --project-ref <REF>`, `npx supabase db push`.
-3. **Login per Code**: Authentication → **Email Templates** → „Magic Link“ und „Confirm signup“: den Text so ändern, dass der Code drinsteht, z. B.
-   ```html
-   <h2>Dein MOSHCHAT-Code</h2>
-   <p style="font-size:32px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p>
-   <p>Gib den Code in der App ein. Er gilt 1 Stunde.</p>
-   ```
-4. **E-Mail-Versand**: Supabase verschickt im Gratis-Tarif nur wenige Mails pro Stunde. Für den Launch unter Authentication → **SMTP Settings** einen eigenen Versand eintragen. Gratis-Optionen: [Resend](https://resend.com) (3.000 Mails/Monat) oder [Brevo](https://brevo.com) (300/Tag). Absender z. B. `hallo@deine-domain.at`.
-5. Authentication → **URL Configuration**: Site URL `moshchat://` eintragen.
+3. **Anmeldung mit E-Mail und Passwort**: Authentication → **Sign In / Providers** → Email:
+   - „Allow new users to sign up“ an.
+   - „Confirm email“: Solange kein eigener Mail-Versand (Schritt 4) eingerichtet ist, **aus**. Sonst bekommen neue Nutzer die Bestätigungs-Mail nicht und können sich nicht anmelden. Mit eigenem Mail-Versand kannst du es einschalten, die App kommt mit beidem zurecht.
+   - „Minimum password length“: 8.
+4. **E-Mail-Versand** (für „Passwort vergessen“ und ggf. die Bestätigungs-Mail): Supabase verschickt ohne eigenen Versand nur 2 Mails pro Stunde und nur an Mitglieder deines Supabase-Teams. Für den Launch unter Authentication → **SMTP Settings** einen eigenen Versand eintragen. Gratis-Optionen: [Resend](https://resend.com) (3.000 Mails/Monat) oder [Brevo](https://brevo.com) (300/Tag). Absender z. B. `hallo@deine-domain.at`.
+5. Authentication → **URL Configuration**: Site URL `https://olivervienduo.github.io/mosh-app` und unter **Redirect URLs** `https://olivervienduo.github.io/mosh-app/new-password` eintragen. Dorthin führt der Link aus „Passwort vergessen“; dort legt man im Browser ein neues Passwort fest, das dann auch in der Handy-App gilt.
 6. Project Settings → **API Keys**: die **Project URL** und den **Publishable key** kopieren.
 
 ### 2. App konfigurieren

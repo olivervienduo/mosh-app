@@ -37,7 +37,10 @@ export default function Welcome() {
             </View>
           ))}
         </View>
-        <Btn solid title="Loslegen" onPress={() => router.push('/sign-in')} style={{ flex: 0 }} />
+        <View style={{ gap: 12 }}>
+          <Btn solid title="Konto erstellen" onPress={() => router.push({ pathname: '/sign-in', params: { mode: 'signup' } })} style={{ flex: 0 }} />
+          <Btn title="Anmelden" onPress={() => router.push('/sign-in')} style={{ flex: 0 }} />
+        </View>
       </View>
     </SafeAreaView>
   );
