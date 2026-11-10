@@ -73,11 +73,11 @@ export function Screen({ children, scroll = true, style, footer }: { children: R
   );
 }
 
-export function TopBar({ title, back = false, right, brand }: { title?: string; back?: boolean; right?: ReactNode; brand?: boolean }) {
+export function TopBar({ title, back = false, right, brand, onBack }: { title?: string; back?: boolean; right?: ReactNode; brand?: boolean; onBack?: () => void }) {
   return (
     <SafeAreaView edges={['top']} style={{ backgroundColor: C.paper }}>
       <View style={s.top}>
-        {back && <IconBtn name="back" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} label="Zurück" />}
+        {back && <IconBtn name="back" onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace('/')))} label="Zurück" />}
         {brand
           ? <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 8 }}><H size={30}>MOSHCHAT</H>{title ? <Mono style={{ color: C.muted }}>/ {title}</Mono> : null}</View>
           : <Text numberOfLines={1} style={[T.mono(13), { flex: 1 }]}>{title}</Text>}

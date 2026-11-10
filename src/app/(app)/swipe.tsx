@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Modal, PanResponder, Pressable, Text, View } from 'react-native';
+import { Animated, BackHandler, Modal, PanResponder, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '@/components/Icon';
 import { PersonCard } from '@/components/PersonCard';
@@ -26,8 +26,26 @@ export default function Swipe() {
   const [last, setLast] = useState<{ id: string; mode: Mode; matched: boolean } | null>(null);
   const [match, setMatch] = useState<{ id: string; p: DeckCard } | null>(null);
   const [err, setErr] = useState('');
-  const [pos] = useState(() => new Animated.ValueXY());
+  // Every card gets its own position. A card that was swiped away stays off screen,
+  // so the old card never flashes back before the next one is shown.
+  const [positions] = useState(() => new Map<string, Animated.ValueXY>());
+  const posFor = useCallback((cardId: string) => {
+    let v = positions.get(cardId);
+    if (!v) { v = new Animated.ValueXY(); positions.set(cardId, v); }
+    return v;
+  }, [positions]);
+  const topId = deck?.[0]?.id ?? '';
+  const pos = posFor(topId);
+  const posRef = useRef(pos);
+  useEffect(() => { posRef.current = pos; }, [pos]);
   const busy = useRef(false);
+
+  // Back (arrow and Android back gesture) leaves the swipe area straight to the event list.
+  const leave = useCallback(() => { router.dismissTo('/events'); }, []);
+  useFocusEffect(useCallback(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => { leave(); return true; });
+    return () => sub.remove();
+  }, [leave]));
 
   useEffect(() => {
     fetchEvent(id).then(setEvent);
@@ -36,10 +54,11 @@ export default function Swipe() {
 
   const load = useCallback(async () => {
     setDeck(null);
+    positions.clear();
     const { data, error } = await supabase.rpc('get_deck', { p_event: id, p_mode: mode, p_live_only: here && liveOnly });
     if (error) setErr(errorText(error));
     setDeck((data as DeckCard[]) ?? []);
-  }, [id, mode, here, liveOnly]);
+  }, [id, mode, here, liveOnly, positions]);
   useEffect(() => { load(); }, [load]);
 
   const decide = useCallback(async (liked: boolean) => {
@@ -47,16 +66,17 @@ export default function Swipe() {
     if (!top || busy.current) return;
     busy.current = true;
     Haptics.selectionAsync().catch(() => {});
-    Animated.timing(pos, { toValue: { x: liked ? 520 : -520, y: 30 }, duration: 220, useNativeDriver: false }).start(async () => {
-      setDeck((d) => (d ? d.slice(1) : d));
-      pos.setValue({ x: 0, y: 0 });
+    const p = posFor(top.id);
+    Animated.timing(p, { toValue: { x: liked ? 560 : -560, y: 30 }, duration: 220, useNativeDriver: false }).start(async () => {
+      setDeck((d) => (d && d[0]?.id === top.id ? d.slice(1) : d));
+      positions.delete(top.id);
       busy.current = false;
       const { data, error } = await supabase.rpc('swipe', { p_target: top.id, p_mode: mode, p_liked: liked, p_event: id });
       if (error) { setErr(errorText(error)); return; }
       setLast({ id: top.id, mode, matched: !!data });
       if (data) { Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {}); setMatch({ id: data as string, p: top }); }
     });
-  }, [deck, mode, id, pos]);
+  }, [deck, mode, id, posFor, positions]);
 
   const undo = async () => {
     if (!last || last.matched) return;
@@ -70,22 +90,25 @@ export default function Swipe() {
   // eslint-disable-next-line react-hooks/refs -- refs are read inside gesture callbacks, not during render
   const [pan] = useState(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_e, g) => Math.abs(g.dx) > 8,
-    onPanResponderMove: Animated.event([null, { dx: pos.x, dy: pos.y }], { useNativeDriver: false }),
+    onPanResponderMove: (_e, g) => posRef.current.setValue({ x: g.dx, y: g.dy }),
     onPanResponderRelease: (_e, g) => {
       if (g.dx > 110) decideRef.current(true);
       else if (g.dx < -110) decideRef.current(false);
-      else Animated.spring(pos, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start();
+      else Animated.spring(posRef.current, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start();
     },
   }));
 
   const rotate = pos.x.interpolate({ inputRange: [-300, 0, 300], outputRange: ['-16deg', '0deg', '16deg'] });
   const yes = pos.x.interpolate({ inputRange: [0, 110], outputRange: [0, 1], extrapolate: 'clamp' });
   const no = pos.x.interpolate({ inputRange: [-110, 0], outputRange: [1, 0], extrapolate: 'clamp' });
+  // The next card grows into place while the top card moves away.
+  const nextScale = pos.x.interpolate({ inputRange: [-220, 0, 220], outputRange: [1, 0.95, 1], extrapolate: 'clamp' });
+  const nextTop = pos.x.interpolate({ inputRange: [-220, 0, 220], outputRange: [0, 14, 0], extrapolate: 'clamp' });
   const live = FEATURES.checkin && event ? isLive(event) : false;
 
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>
-      <TopBar back title={event?.title ?? ''} />
+      <TopBar back onBack={leave} title={event?.title ?? ''} />
       <View style={{ flex: 1, padding: 16, gap: 12 }}>
         {me.modes.length > 1 && <Segmented options={me.modes.map((k) => ({ key: k, label: MODES[k].label }))} value={mode} onChange={setMode} colors={{ friends: C.friends, date: C.date, business: C.business }} />}
         {me.paused && <Text style={[T.mono(11), { textAlign: 'center' }]}>Dein Profil ist pausiert. Niemand sieht dich gerade.</Text>}
@@ -110,8 +133,8 @@ export default function Swipe() {
             </View>
           ) : (
             <>
-              {deck[1] && <View style={{ position: 'absolute', top: 14, left: 0, right: 0, bottom: 0, transform: [{ scale: 0.95 }] }}><PersonCard p={deck[1]} mode={mode} /></View>}
-              <Animated.View {...pan.panHandlers} style={{ flex: 1, transform: [{ translateX: pos.x }, { translateY: pos.y }, { rotate }] }}>
+              {deck[1] && <Animated.View key={`next-${deck[1].id}`} style={{ position: 'absolute', top: nextTop, left: 0, right: 0, bottom: 0, transform: [{ scale: nextScale }] }}><PersonCard p={deck[1]} mode={mode} /></Animated.View>}
+              <Animated.View key={`top-${deck[0].id}`} {...pan.panHandlers} style={{ flex: 1, transform: [{ translateX: pos.x }, { translateY: pos.y }, { rotate }] }}>
                 <PersonCard p={deck[0]} mode={mode} yes={yes} no={no} />
               </Animated.View>
             </>
