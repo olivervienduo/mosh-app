@@ -6,6 +6,7 @@ import {
   type StyleProp, type TextInputProps, type TextStyle, type ViewStyle,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { publicUrl } from '@/lib/supabase';
 import { BORDER, C, F } from '@/lib/theme';
 import { Icon, type IconName } from './Icon';
@@ -158,6 +159,27 @@ export function Field({ label, hint, error, ...props }: TextInputProps & { label
       <TextInput placeholderTextColor="#8a8378" {...props} onFocus={(e) => { props.onFocus?.(e); revealers.forEach((r) => r()); }} style={[s.input, props.multiline && { minHeight: 100, textAlignVertical: 'top' }, props.style]} />
       {hint ? <Text style={[T.body(13), { color: C.muted }]}>{hint}</Text> : null}
       {error ? <Text style={[T.semi(14), { color: C.danger }]}>{error}</Text> : null}
+    </View>
+  );
+}
+
+/**
+ * Soft fade below a fixed header area: the paper colour runs a little further
+ * down over the scrolling content and then fades out, instead of a hard edge.
+ */
+export function FadeEdge({ height = 38, color = C.paper }: { height?: number; color?: string }) {
+  return (
+    <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, top: '100%', height }}>
+      <Svg width="100%" height="100%" preserveAspectRatio="none">
+        <Defs>
+          <LinearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={color} stopOpacity={1} />
+            <Stop offset="0.35" stopColor={color} stopOpacity={0.85} />
+            <Stop offset="1" stopColor={color} stopOpacity={0} />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100%" height="100%" fill="url(#fade)" />
+      </Svg>
     </View>
   );
 }
