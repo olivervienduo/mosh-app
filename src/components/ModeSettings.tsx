@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from 'react-native';
-import { GENDER, MODE_KEYS, MODES, SEEK, type Gender, type Mode } from '@/lib/constants';
+import { GENDER, MODE_KEYS, MODES, SEEK, sortModes, type Gender, type Mode } from '@/lib/constants';
 import type { Profile } from '@/lib/types';
 import { C } from '@/lib/theme';
 import { Field, Mono, Pill, Segmented, T, Toggle } from './ui';
@@ -75,6 +75,14 @@ export const ModeChip = ({ mode }: { mode: Mode }) => (
     <Text style={T.mono(10)}>{MODES[mode].label}</Text>
   </View>
 );
+
+/** All modes two people share in one chat, e.g. "Freunde · Date". */
+export const ModeChips = ({ modes }: { modes: Mode[] }) => (
+  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>{sortModes(modes).map((m) => <ModeChip key={m} mode={m} />)}</View>
+);
+
+/** Text for the note in a chat when two people also match in another mode. */
+export const alsoMatchText = (mode: Mode) => `Ihr passt jetzt auch ${mode === 'business' ? 'beruflich' : mode === 'date' ? 'für ein Date' : 'als Freunde'} zusammen.`;
 
 export const PressableText = ({ children, onPress }: { children: string; onPress: () => void }) => (
   <Pressable onPress={onPress} accessibilityRole="button"><Text style={[T.semi(14), { textDecorationLine: 'underline' }]}>{children}</Text></Pressable>

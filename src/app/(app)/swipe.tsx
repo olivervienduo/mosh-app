@@ -24,7 +24,8 @@ export default function Swipe() {
   const [liveOnly, setLiveOnly] = useState(true);
   const [deck, setDeck] = useState<DeckCard[] | null>(null);
   const [last, setLast] = useState<{ id: string; mode: Mode; matched: boolean } | null>(null);
-  const [match, setMatch] = useState<{ id: string; p: DeckCard } | null>(null);
+  // also = you already had a chat with this person; this swipe adds another shared mode.
+  const [match, setMatch] = useState<{ id: string; p: DeckCard; also: boolean } | null>(null);
   const [err, setErr] = useState('');
   // Every card gets its own position. A card that was swiped away stays off screen,
   // so the old card never flashes back before the next one is shown.
@@ -74,7 +75,11 @@ export default function Swipe() {
       const { data, error } = await supabase.rpc('swipe', { p_target: top.id, p_mode: mode, p_liked: liked, p_event: id });
       if (error) { setErr(errorText(error)); return; }
       setLast({ id: top.id, mode, matched: !!data });
-      if (data) { Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {}); setMatch({ id: data as string, p: top }); }
+      if (data) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+        const { data: m } = await supabase.from('matches').select('modes').eq('id', data as string).maybeSingle();
+        setMatch({ id: data as string, p: top, also: ((m?.modes as string[] | undefined)?.length ?? 1) > 1 });
+      }
     });
   }, [deck, mode, id, posFor, positions]);
 
@@ -159,11 +164,13 @@ export default function Swipe() {
               <View style={{ borderWidth: 3, borderColor: C.ink, borderRadius: 60 }}><Avatar path={me.photo_path} name={me.name} color={me.color} size={96} /></View>
               <View style={{ borderWidth: 3, borderColor: C.ink, borderRadius: 60, marginLeft: -18 }}><Avatar path={match.p.photo_path} name={match.p.name} color={match.p.color} size={96} /></View>
             </View>
-            <P style={{ fontSize: 18 }}>Du und {match.p.name} wollt euch {MODES[mode].verb}.{here && match.p.here ? ' Ihr seid beide gerade hier.' : ''}</P>
+            <P style={{ fontSize: 18 }}>{match.also
+              ? `Du und ${match.p.name} wollt euch jetzt auch ${MODES[mode].verb}. Es bleibt bei eurem einen Chat.`
+              : `Du und ${match.p.name} wollt euch ${MODES[mode].verb}.`}{here && match.p.here ? ' Ihr seid beide gerade hier.' : ''}</P>
             {here && match.p.here
               ? <Btn solid title="Jetzt treffen" onPress={() => { const m = match.id; setMatch(null); router.push({ pathname: '/chat/[id]', params: { id: m, meet: 'now' } }); }} style={{ flex: 0 }} />
               : null}
-            <Btn solid={!(here && match.p.here)} title="Nachricht schreiben" onPress={() => { const m = match.id; setMatch(null); router.push({ pathname: '/chat/[id]', params: { id: m } }); }} style={{ flex: 0 }} />
+            <Btn solid={!(here && match.p.here)} title={match.also ? 'Zum Chat' : 'Nachricht schreiben'} onPress={() => { const m = match.id; setMatch(null); router.push({ pathname: '/chat/[id]', params: { id: m } }); }} style={{ flex: 0 }} />
             <Btn title="Weiter swipen" onPress={() => setMatch(null)} style={{ flex: 0 }} />
           </SafeAreaView>
         )}

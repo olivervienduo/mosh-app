@@ -24,13 +24,13 @@ export type DeckCard = {
 export type LikeRow = { id: string; name: string; age: number; job: string; photo_path: string | null; color: string; pronouns: string; mode: Mode; event_id: string | null; event_title: string | null };
 
 export type ChatRow = {
-  match_id: string; mode: Mode; event_id: string | null; event_title: string | null; created_at: string; last_message_at: string;
+  match_id: string; mode: Mode; modes: Mode[]; event_id: string | null; event_title: string | null; created_at: string; last_message_at: string;
   other_id: string; other_name: string; other_photo: string | null; other_color: string;
-  last_body: string | null; last_kind: 'text' | 'meet' | null; last_sender: string | null; unread: number; here: boolean;
+  last_body: string | null; last_kind: 'text' | 'meet' | 'system' | null; last_sender: string | null; unread: number; here: boolean;
 };
 
 export type Meet = { day?: string; when: string; where: string; deal?: string };
-export type Message = { id: number; match_id: string; sender_id: string; kind: 'text' | 'meet'; body: string; meet: Meet | null; meet_accepted: boolean; created_at: string; read_at: string | null };
+export type Message = { id: number; match_id: string; sender_id: string; kind: 'text' | 'meet' | 'system'; body: string; meet: Meet | null; meet_accepted: boolean; created_at: string; read_at: string | null };
 
 export type Media = { type: 'image' | 'video'; path: string; width?: number; height?: number };
 export type FeedPost = {

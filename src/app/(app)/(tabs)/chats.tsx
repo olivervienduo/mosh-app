@@ -2,9 +2,9 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { Icon } from '@/components/Icon';
-import { ModeChip } from '@/components/ModeSettings';
+import { ModeChips, alsoMatchText } from '@/components/ModeSettings';
 import { Avatar, Btn, Empty, H, Mono, P, T, TopBar } from '@/components/ui';
-import { MODES } from '@/lib/constants';
+import { MODES, type Mode } from '@/lib/constants';
 import { useFocusLoad } from '@/lib/events';
 import { supabase } from '@/lib/supabase';
 import type { ChatRow, LikeRow } from '@/lib/types';
@@ -13,7 +13,7 @@ import { C } from '@/lib/theme';
 const WEEK = 7 * 864e5;
 
 function ChatItem({ c }: { c: ChatRow }) {
-  const last = c.last_kind === 'meet' ? 'Treffpunkt vorgeschlagen' : c.last_body ?? '';
+  const last = c.last_kind === 'meet' ? 'Treffpunkt vorgeschlagen' : c.last_kind === 'system' ? alsoMatchText(c.last_body as Mode) : c.last_body ?? '';
   return (
     <Pressable onPress={() => router.push({ pathname: '/chat/[id]', params: { id: c.match_id } })} accessibilityRole="button"
       style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 14, borderBottomWidth: 2, borderStyle: 'dashed', borderColor: C.line }}>
@@ -22,8 +22,8 @@ function ChatItem({ c }: { c: ChatRow }) {
         {c.here && <View style={{ position: 'absolute', right: 0, bottom: 0, width: 16, height: 16, borderRadius: 8, backgroundColor: C.green, borderWidth: 3, borderColor: C.paper }} />}
       </View>
       <View style={{ flex: 1, gap: 2 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}><Text style={T.display(20)}>{c.other_name}</Text><ModeChip mode={c.mode} /></View>
-        <Text numberOfLines={1} style={[T.body(15), { color: c.unread ? C.ink : C.muted }, c.unread ? { fontFamily: 'Archivo-SemiBold' } : null]}>{c.last_sender && c.last_sender !== c.other_id ? 'Du: ' : ''}{last}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}><Text style={T.display(20)}>{c.other_name}</Text><View style={{ flexShrink: 1 }}><ModeChips modes={c.modes?.length ? c.modes : [c.mode]} /></View></View>
+        <Text numberOfLines={1} style={[T.body(15), { color: c.unread ? C.ink : C.muted }, c.unread ? { fontFamily: 'Archivo-SemiBold' } : null]}>{c.last_kind !== 'system' && c.last_sender && c.last_sender !== c.other_id ? 'Du: ' : ''}{last}</Text>
         {c.event_title ? <Mono size={11} style={{ color: C.muted }}>{c.event_title}</Mono> : null}
       </View>
       {c.unread > 0 && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: C.ink }} />}

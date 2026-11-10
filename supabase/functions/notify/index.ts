@@ -67,7 +67,10 @@ async function handle(p: Payload) {
     if (!m) return;
     const recipient = m.user_a === r.sender_id ? m.user_b : m.user_a;
     const { data: sender } = await db.from('profiles').select('name').eq('id', r.sender_id).single();
-    const body = r.kind === 'meet' ? 'hat einen Treffpunkt vorgeschlagen 📍' : String(r.body ?? '').slice(0, 140);
+    const label: Record<string, string> = { friends: 'als Freunde', date: 'für ein Date', business: 'beruflich' };
+    const body = r.kind === 'meet' ? 'hat einen Treffpunkt vorgeschlagen 📍'
+      : r.kind === 'system' ? `Ihr passt jetzt auch ${label[String(r.body)] ?? ''} zusammen ✨`
+      : String(r.body ?? '').slice(0, 140);
     await send(to(await recipients([recipient], 'messages'), sender?.name ?? 'MOSHCHAT', body, `/chat/${r.match_id}`));
   }
 

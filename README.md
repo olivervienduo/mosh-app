@@ -45,7 +45,7 @@ Du brauchst: einen Computer mit [Node.js 20+](https://nodejs.org), ein Handy, ei
 
 1. Auf supabase.com → **New project**. Region: **Frankfurt (eu-central-1)** (wichtig für DSGVO). Datenbank-Passwort sicher aufbewahren.
 2. **Datenbank aufsetzen** – entweder:
-   - Ohne Kommandozeile: Projekt → **SQL Editor** → Inhalt von `supabase/migrations/20261107000000_init.sql` einfügen → **Run**.
+   - Ohne Kommandozeile: Projekt → **SQL Editor** → nacheinander den Inhalt jeder Datei aus `supabase/migrations/` einfügen (in der Reihenfolge der Dateinamen, zuerst `…_init.sql`) → jeweils **Run**.
    - Oder mit CLI: `npx supabase login`, `npx supabase link --project-ref <REF>`, `npx supabase db push`.
 3. **Anmeldung mit E-Mail und Passwort**: Authentication → **Sign In / Providers** → Email:
    - „Allow new users to sign up“ an.

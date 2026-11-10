@@ -3,18 +3,18 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '@/components/Icon';
-import { ModeChip } from '@/components/ModeSettings';
+import { ModeChip, ModeChips, alsoMatchText } from '@/components/ModeSettings';
 import { ReportSheet, useToast } from '@/components/ReportSheet';
 import { Avatar, Btn, IconBtn, Loading, MenuRow, Mono, P, Pill, Row, Sheet, T } from '@/components/ui';
 import { useMe } from '@/lib/auth';
-import { MODES, meetWhen, meetWhere, type Mode } from '@/lib/constants';
+import { MODES, meetWhen, meetWhere, sortModes, type Mode } from '@/lib/constants';
 import { eventDays, isLive, multi, time } from '@/lib/dates';
 import { errorText, supabase } from '@/lib/supabase';
 import type { EventRow, Meet, Message } from '@/lib/types';
 import { C, F } from '@/lib/theme';
 
 type Other = { id: string; name: string; age: number; job: string; city: string; bio: string; pronouns: string; photo_path: string | null; color: string; lines: Partial<Record<Mode, string>> };
-type Info = { mode: Mode; other: Other | null; event: EventRow | null };
+type Info = { modes: Mode[]; other: Other | null; event: EventRow | null };
 
 const hhmm = (ts: string) => new Date(ts).toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' });
 
@@ -46,7 +46,7 @@ export default function Chat() {
         supabase.from('messages').select('*').eq('match_id', id).order('created_at', { ascending: true }).limit(500),
       ]);
       if (!alive) return;
-      setInfo({ mode: m.mode, other: (o.data as Other) ?? null, event: (e.data as EventRow) ?? null });
+      setInfo({ modes: sortModes((m.modes?.length ? m.modes : [m.mode]) as Mode[]), other: (o.data as Other) ?? null, event: (e.data as EventRow) ?? null });
       setMsgs((ms.data as Message[]) ?? []);
     })();
     return () => { alive = false; };
@@ -58,6 +58,8 @@ export default function Chat() {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `match_id=eq.${id}` }, (p) => {
         const m = p.new as Message;
         setMsgs((cur) => (cur.some((x) => x.id === m.id) ? cur : [...cur, m]));
+        // A new shared mode: show it in the header right away.
+        if (m.kind === 'system') setInfo((i) => (i && !i.modes.includes(m.body as Mode) ? { ...i, modes: sortModes([...i.modes, m.body as Mode]) } : i));
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages', filter: `match_id=eq.${id}` }, (p) => {
         const m = p.new as Message;
@@ -70,7 +72,7 @@ export default function Chat() {
 
   // Mark incoming messages as read
   useEffect(() => {
-    const unread = msgs.filter((m) => m.sender_id !== me.id && !m.read_at).map((m) => m.id);
+    const unread = msgs.filter((m) => m.sender_id !== me.id && !m.read_at && m.kind !== 'system').map((m) => m.id);
     if (unread.length) supabase.from('messages').update({ read_at: new Date().toISOString() }).in('id', unread).then(() => {});
   }, [msgs, me.id]);
 
@@ -116,9 +118,10 @@ export default function Chat() {
   );
   if (!info) return <Loading />;
   const o = info.other;
-  const mode = MODES[info.mode];
+  const mode = MODES[info.modes[0]];
+  const verbs = info.modes.map((k) => MODES[k].verb);
   const ev = info.event;
-  const lastMine = [...msgs].reverse().find((m) => m.sender_id === me.id);
+  const lastMine = [...msgs].reverse().find((m) => m.sender_id === me.id && m.kind !== 'system');
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: C.paper }}>
@@ -128,7 +131,7 @@ export default function Chat() {
           <Avatar path={o?.photo_path} name={o?.name ?? '?'} color={o?.color ?? C.sand} size={42} />
           <View style={{ flex: 1 }}>
             <Text style={T.display(20)} numberOfLines={1}>{o?.name ?? 'Gelöschtes Profil'}</Text>
-            <Row gap={6} style={{ alignItems: 'center' }}><ModeChip mode={info.mode} />{ev ? <Text numberOfLines={1} style={[T.mono(10), { flexShrink: 1 }]}>{ev.title}</Text> : null}</Row>
+            <Row gap={6} style={{ alignItems: 'center' }}><ModeChips modes={info.modes} />{ev ? <Text numberOfLines={1} style={[T.mono(10), { flexShrink: 1 }]}>{ev.title}</Text> : null}</Row>
           </View>
         </Pressable>
         <IconBtn name="more" label="Optionen" onPress={() => setMenu(true)} />
@@ -144,12 +147,22 @@ export default function Chat() {
           ListHeaderComponent={
             <View style={{ alignItems: 'center', gap: 8, paddingVertical: 20 }}>
               <Avatar path={o?.photo_path} name={o?.name ?? '?'} color={o?.color ?? C.sand} size={84} />
-              <Mono>Match · {mode.label}</Mono>
-              {msgs.length === 0 && <P muted style={{ textAlign: 'center' }}>Ihr wollt euch {mode.verb}. Sag Hallo{ev ? ` oder schlag einen Treffpunkt bei ${ev.title} vor` : ''}.</P>}
+              <Mono>Match · {info.modes.map((k) => MODES[k].label).join(' · ')}</Mono>
+              {msgs.length === 0 && <P muted style={{ textAlign: 'center' }}>Ihr wollt euch {verbs.length > 1 ? `${verbs.slice(0, -1).join(', ')} und ${verbs[verbs.length - 1]}` : verbs[0]}. Sag Hallo{ev ? ` oder schlag einen Treffpunkt bei ${ev.title} vor` : ''}.</P>}
             </View>
           }
           renderItem={({ item: m }) => {
             const mine = m.sender_id === me.id;
+            if (m.kind === 'system') {
+              const k = m.body as Mode;
+              return (
+                <View style={{ alignSelf: 'center', alignItems: 'center', gap: 6, marginVertical: 10, maxWidth: '86%' }}>
+                  {MODES[k] ? <ModeChip mode={k} /> : null}
+                  <Text style={[T.semi(15), { textAlign: 'center' }]}>{MODES[k] ? alsoMatchText(k) : ''}</Text>
+                  <Text style={[T.body(11), { color: C.muted }]}>{hhmm(m.created_at)}</Text>
+                </View>
+              );
+            }
             if (m.kind === 'meet' && m.meet) {
               return (
                 <View style={{ alignSelf: mine ? 'flex-end' : 'flex-start', width: '82%', borderWidth: 2.5, borderColor: C.ink, borderRadius: 22, backgroundColor: ev?.color ?? mode.color, padding: 14, gap: 6 }}>
@@ -214,7 +227,9 @@ export default function Chat() {
             <Text style={T.display(34)}>{o.name}, {o.age}</Text>
             {o.pronouns ? <Mono style={{ textTransform: 'none' }}>{o.pronouns}</Mono> : null}
             {(o.job || o.city) ? <P muted>{[o.job, o.city].filter(Boolean).join(' · ')}</P> : null}
-            {o.lines?.[info.mode] ? <Text style={T.semi(19)}>„{o.lines[info.mode]}“</Text> : null}
+            {info.modes.map((k) => (o.lines?.[k] ? (
+              <View key={k} style={{ gap: 4 }}><ModeChip mode={k} /><Text style={T.semi(19)}>„{o.lines[k]}“</Text></View>
+            ) : null))}
             {o.bio ? <P>{o.bio}</P> : null}
           </View>
         )}

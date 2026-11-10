@@ -1,6 +1,9 @@
 import { C } from './theme';
 
 export type Mode = 'friends' | 'date' | 'business';
+/** Modes in the app's usual order: Freunde, Date, Business. */
+export const sortModes = (modes: Mode[]): Mode[] => MODE_KEYS.filter((k) => modes.includes(k));
+
 export const MODE_KEYS: Mode[] = ['friends', 'date', 'business'];
 export const MODES: Record<Mode, { label: string; color: string; yes: string; verb: string; desc: string; ph: string }> = {
   friends: { label: 'Freunde', color: C.friends, yes: 'Klingt nett', verb: 'als Freunde kennenlernen', desc: 'Leute für Konzerte, Festivals und danach', ph: 'z. B. Suche Leute für die erste Reihe' },
