@@ -101,8 +101,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": ""
+        "projectId": "f714ff2c-1eea-48a7-bade-c928ab8014d3"
       }
-    }
+    },
+    "owner": "vienduo"
   }
 }
