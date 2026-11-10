@@ -14,7 +14,7 @@
       "supportsTablet": false,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "MOSHCHAT nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
+        "NSCameraUsageDescription": "MOSHCHAT nutzt die Kamera, damit du ein Profilfoto aufnehmen kannst.",
         "NSPhotoLibraryUsageDescription": "MOSHCHAT braucht Zugriff auf deine Fotos für dein Profilbild und Eventbilder."
       }
     },
@@ -26,12 +26,13 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "permissions": [],
+      "permissions": [
+        "CAMERA"
+      ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.CAMERA"
+        "android.permission.ACCESS_COARSE_LOCATION"
       ],
       "predictiveBackGestureEnabled": false
     },
@@ -73,7 +74,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "MOSHCHAT nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
+          "cameraPermission": "MOSHCHAT nutzt die Kamera, damit du ein Profilfoto aufnehmen kannst.",
           "microphonePermission": false,
           "recordAudioAndroid": false,
           "barcodeScannerEnabled": true
@@ -83,7 +84,7 @@
         "expo-image-picker",
         {
           "photosPermission": "MOSHCHAT braucht Zugriff auf deine Fotos für dein Profilbild und Eventbilder.",
-          "cameraPermission": false,
+          "cameraPermission": "MOSHCHAT nutzt die Kamera, damit du ein Profilfoto aufnehmen kannst.",
           "microphonePermission": false
         }
       ],

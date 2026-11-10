@@ -4,15 +4,17 @@ import { pick, upload } from '@/lib/media';
 import type { Profile } from '@/lib/types';
 import { ageFrom, parseInputDate, toInputDate } from '@/lib/dates';
 import { C } from '@/lib/theme';
-import { Avatar, Field, Row, T } from './ui';
+import { Avatar, Btn, Field, MenuRow, Row, Sheet, T } from './ui';
 
 type Patch = (p: Partial<Profile>) => void;
 
 export function PhotoPicker({ me, onChange, onError }: { me: Profile; onChange: Patch; onError: (e: string) => void }) {
   const [busy, setBusy] = useState(false);
-  const choose = async () => {
+  const [ask, setAsk] = useState(false);
+  const choose = async (camera: boolean) => {
+    setAsk(false);
     try {
-      const [p] = await pick({ square: true });
+      const [p] = await pick({ square: true, camera });
       if (!p) return;
       setBusy(true);
       const { path } = await upload('avatars', me.id, p, 900);
@@ -20,7 +22,8 @@ export function PhotoPicker({ me, onChange, onError }: { me: Profile; onChange: 
     } catch (e) { onError((e as Error).message); } finally { setBusy(false); }
   };
   return (
-    <Pressable onPress={choose} accessibilityRole="button" accessibilityLabel="Profilfoto wählen" style={{ alignSelf: 'center', alignItems: 'center', gap: 8 }}>
+    <>
+    <Pressable onPress={() => setAsk(true)} accessibilityRole="button" accessibilityLabel="Profilfoto wählen" style={{ alignSelf: 'center', alignItems: 'center', gap: 8 }}>
       <View style={{ borderWidth: 3, borderColor: C.ink, borderRadius: 80 }}>
         <Avatar path={me.photo_path} name={me.name || '?'} color={me.color} size={140} />
       </View>
@@ -29,6 +32,12 @@ export function PhotoPicker({ me, onChange, onError }: { me: Profile; onChange: 
         <Text style={[T.body(14), { color: C.muted, textAlign: 'center', maxWidth: 280 }]}>Mit Foto bekommst du deutlich mehr Likes. Ohne Foto sehen andere nur deinen Anfangsbuchstaben.</Text>
       )}
     </Pressable>
+    <Sheet visible={ask} onClose={() => setAsk(false)} title={me.photo_path ? 'Foto ändern' : 'Foto hinzufügen'}>
+      <MenuRow title="📷  Foto aufnehmen" sub="Mit der Kamera, jetzt gleich" onPress={() => choose(true)} />
+      <MenuRow title="🖼️  Aus Galerie wählen" sub="Ein Foto, das du schon hast" onPress={() => choose(false)} />
+      <Btn title="Abbrechen" onPress={() => setAsk(false)} style={{ flex: 0 }} />
+    </Sheet>
+    </>
   );
 }
 

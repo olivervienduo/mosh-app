@@ -51,9 +51,8 @@ git checkout voll-version
 - **Feed:** Für Push-Mitteilungen bei neuen Beiträgen müssen die Funktion `notify`
   und `supabase/webhooks.sql` eingerichtet sein (siehe README). Ohne Push funktioniert der Feed trotzdem.
 - **Check-in:** Braucht die Kamera, funktioniert also nur in der Handy-App, nicht in der Web-Version.
-  Die Kamera ist für Android derzeit gesperrt. Beim Zurückholen in `app.json` unter `android`
-  `"android.permission.CAMERA"` aus `blockedPermissions` entfernen und `"CAMERA"` wieder bei `permissions` eintragen.
-  Für iPhone ist der Text zur Kamera-Nutzung noch hinterlegt (`NSCameraUsageDescription`).
+  Die Kamera-Freigabe ist schon aktiv (für Profilfotos). Beim Zurückholen den Text zur Kamera-Nutzung in `app.json`
+  ergänzen, z. B. „…um ein Profilfoto aufzunehmen und den Check-in-Code am Einlass zu scannen.“
 - **Offiziell:** Wenn du das Abzeichen wieder einschaltest, prüfe vorher, welche Events in Supabase
   `official = true` haben. Die vier Test-Events stehen auf „offiziell“.
 - **Store-Texte:** In `docs/LAUNCH.md` sind die Abschnitte „LIVE AM EVENT“ und

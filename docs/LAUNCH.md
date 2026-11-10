@@ -1,14 +1,5 @@
 # Launch-Checkliste
 
-## Vor dem ersten iPhone-Build: Kamera
-
-Der QR-Check-in ist ausgeblendet, das Kamera-Modul (`expo-camera`) steckt aber noch in der App.
-Deshalb bleibt in `app.json` der iPhone-Text `NSCameraUsageDescription` drin: Ohne ihn lehnt Apple
-den Upload ab, sobald ein Kamera-Modul enthalten ist. Fragt Apple bei der Prüfung nach, wofür die
-Kamera gebraucht wird: Entweder `expo-camera` samt `scan.tsx`/`event/qr.tsx` entfernen (die
-Voll-Version liegt im Branch `voll-version`) oder den Check-in wieder einschalten.
-Für Android ist die Kamera-Berechtigung bereits gesperrt.
-
 ## Was du selbst erledigen musst
 
 | Schritt | Kosten | Wo |

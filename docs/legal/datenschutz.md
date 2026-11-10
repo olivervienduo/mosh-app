@@ -33,6 +33,8 @@ Wir erfassen **keinen Standort**, nutzen **keine Werbung, kein Tracking und kein
 - Kommentare zu Beiträgen sehen alle Nutzer:innen.
 - Gesperrte Personen sehen dich nicht mehr.
 
+**Kamera und Fotos auf deinem Handy:** MOSHCHAT greift nur darauf zu, wenn du selbst ein Foto aufnimmst oder aus deiner Galerie auswählst, etwa für dein Profilbild. Hochgeladen wird nur das Foto, das du auswählst. Es gibt keinen Zugriff im Hintergrund. Du kannst die Erlaubnis jederzeit in den Einstellungen deines Handys entziehen.
+
 ## 4. Auftragsverarbeiter und Empfänger
 
 - **Supabase Inc.** (Datenbank, Login, Dateispeicher, Server-Funktionen) – Hosting in der EU (Frankfurt). Auftragsverarbeitungsvertrag nach Art. 28 DSGVO; für etwaige Zugriffe aus den USA: EU-Standardvertragsklauseln / EU-US Data Privacy Framework.

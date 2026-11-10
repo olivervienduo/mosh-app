@@ -7,7 +7,16 @@ import { supabase } from './supabase';
 type Bucket = 'avatars' | 'events' | 'posts';
 export type Picked = { uri: string; type: 'image' | 'video'; width?: number; height?: number; mime?: string; size?: number };
 
-export async function pick(opts: { video?: boolean; multiple?: boolean; square?: boolean } = {}): Promise<Picked[]> {
+export async function pick(opts: { video?: boolean; multiple?: boolean; square?: boolean; camera?: boolean } = {}): Promise<Picked[]> {
+  if (opts.camera) {
+    const cam = await ImagePicker.requestCameraPermissionsAsync();
+    if (!cam.granted) throw new Error('MOSHCHAT braucht Zugriff auf deine Kamera, um ein Foto aufzunehmen. Du kannst ihn in den Einstellungen deines Handys erlauben.');
+    const shot = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'], allowsEditing: !!opts.square, aspect: opts.square ? [1, 1] : undefined, quality: 1, cameraType: ImagePicker.CameraType.front,
+    });
+    if (shot.canceled) return [];
+    return shot.assets.map((a) => ({ uri: a.uri, type: 'image' as const, width: a.width, height: a.height, mime: a.mimeType ?? undefined, size: a.fileSize ?? undefined }));
+  }
   const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!perm.granted) throw new Error('MOSHCHAT braucht Zugriff auf deine Fotos. Du kannst ihn in den Einstellungen deines Handys erlauben.');
   const res = await ImagePicker.launchImageLibraryAsync({
