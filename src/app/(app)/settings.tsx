@@ -11,6 +11,8 @@ import { confirmAction } from '@/lib/confirm';
 import { SUPPORT_EMAIL } from '@/lib/constants';
 import { range } from '@/lib/dates';
 import { useFocusLoad } from '@/lib/events';
+import { SafetySheet } from '@/components/Safety';
+import { useOpenReports } from '@/lib/admin';
 import { FEATURES } from '@/lib/features';
 import { errorText, supabase } from '@/lib/supabase';
 import type { EventRow, Profile } from '@/lib/types';
@@ -43,6 +45,7 @@ export default function Settings() {
   const { updateProfile, signOut, session } = useAuth();
   const toast = useToast();
   const [rules, setRules] = useState(false);
+  const openReports = useOpenReports();
   const [del, setDel] = useState(false);
   const [busy, setBusy] = useState(false);
   const { data, setData } = useFocusLoad(async () => {
@@ -149,7 +152,8 @@ export default function Settings() {
 
         {me.is_admin && (
           <Section title="Admin">
-            <MenuRow title="Meldungen & Freigaben" sub={FEATURES.official ? 'Gemeldete Inhalte prüfen, Events verifizieren' : 'Gemeldete Inhalte prüfen'} onPress={() => router.push('/admin')} />
+            <MenuRow title={openReports ? `Meldungen & Freigaben (${openReports} offen)` : 'Meldungen & Freigaben'}
+              sub={openReports ? 'Bitte bald prüfen. Die Stores erwarten, dass Meldungen zügig bearbeitet werden.' : FEATURES.official ? 'Gemeldete Inhalte prüfen, Events verifizieren' : 'Keine offenen Meldungen'} onPress={() => router.push('/admin')} />
           </Section>
         )}
 
@@ -163,18 +167,7 @@ export default function Settings() {
         <Text style={[T.mono(10), { textAlign: 'center', color: C.muted }]}>MOSHCHAT {version} · Gratis. Ohne Werbung.</Text>
       </ScrollView>
 
-      <Sheet visible={rules} onClose={() => setRules(false)} title="Sicher treffen">
-        {[
-          ['Öffentlich bleiben', 'Trefft euch am Event, an einem belebten Ort. Nicht bei jemandem zu Hause.'],
-          ['Jemandem Bescheid geben', 'Sag einer Freundin oder einem Freund, mit wem und wo du dich triffst.'],
-          ['Eigene Anreise', 'Komm und geh selbstständig. Behalte dein Getränk im Blick.'],
-          ['Nichts überweisen', 'Schick nie Geld und gib keine Bankdaten weiter, egal mit welcher Geschichte.'],
-          ['Bauchgefühl zählt', 'Fühlt sich etwas falsch an, geh. Blockiere und melde, wir prüfen jede Meldung.'],
-        ].map(([t, d]) => <View key={t} style={{ gap: 2 }}><Text style={T.semi(17)}>{t}</Text><P muted style={{ fontSize: 15 }}>{d}</P></View>)}
-        <H size={22} style={{ marginTop: 8 }}>Community-Regeln</H>
-        <P style={{ fontSize: 15 }}>MOSHCHAT ist ab 18. Sei du selbst: echte Fotos, echter Name. Kein Hass, keine Belästigung, keine Nacktbilder, kein Spam, kein Verkauf. Respektiere ein Nein und Pronomen. Verstöße führen zur Sperre.</P>
-        <P muted style={{ fontSize: 14 }}>In einem Notfall: 112.</P>
-      </Sheet>
+      <SafetySheet visible={rules} onClose={() => setRules(false)} />
 
       <Sheet visible={del} onClose={() => setDel(false)} title="Konto löschen?">
         <P>Dein Profil, deine Matches, Chats, Likes und alle Fotos werden endgültig gelöscht. Events, die du erstellt hast, verschwinden ebenfalls. Das kann nicht rückgängig gemacht werden.</P>

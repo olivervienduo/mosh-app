@@ -15,7 +15,7 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "MOSHCHAT nutzt die Kamera, um den Check-in-Code am Einlass zu scannen.",
-        "NSPhotoLibraryUsageDescription": "MOSHCHAT braucht Zugriff auf deine Fotos für dein Profilbild, Eventbilder und Beiträge."
+        "NSPhotoLibraryUsageDescription": "MOSHCHAT braucht Zugriff auf deine Fotos für dein Profilbild und Eventbilder."
       }
     },
     "android": {
@@ -26,13 +26,12 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "permissions": [
-        "CAMERA"
-      ],
+      "permissions": [],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION"
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.CAMERA"
       ],
       "predictiveBackGestureEnabled": false
     },
@@ -83,7 +82,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "MOSHCHAT braucht Zugriff auf deine Fotos für dein Profilbild, Eventbilder und Beiträge.",
+          "photosPermission": "MOSHCHAT braucht Zugriff auf deine Fotos für dein Profilbild und Eventbilder.",
           "cameraPermission": false,
           "microphonePermission": false
         }

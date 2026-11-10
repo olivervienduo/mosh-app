@@ -25,6 +25,9 @@ export function PhotoPicker({ me, onChange, onError }: { me: Profile; onChange: 
         <Avatar path={me.photo_path} name={me.name || '?'} color={me.color} size={140} />
       </View>
       <Text style={[T.mono(11), { backgroundColor: C.ink, color: C.white, paddingHorizontal: 10, paddingVertical: 4 }]}>{busy ? 'Lädt …' : me.photo_path ? 'Foto ändern' : 'Foto hinzufügen'}</Text>
+      {!me.photo_path && !busy && (
+        <Text style={[T.body(14), { color: C.muted, textAlign: 'center', maxWidth: 280 }]}>Mit Foto bekommst du deutlich mehr Likes. Ohne Foto sehen andere nur deinen Anfangsbuchstaben.</Text>
+      )}
     </Pressable>
   );
 }

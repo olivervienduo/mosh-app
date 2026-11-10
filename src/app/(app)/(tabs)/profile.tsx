@@ -7,6 +7,7 @@ import { PersonCard } from '@/components/PersonCard';
 import { BasicFields, PhotoPicker } from '@/components/ProfileFields';
 import { useToast } from '@/components/ReportSheet';
 import { Btn, H, IconBtn, Mono, Segmented, T, TopBar } from '@/components/ui';
+import { useOpenReports } from '@/lib/admin';
 import { useAuth, useMe } from '@/lib/auth';
 import { AVATAR_COLORS, MODES, type Mode } from '@/lib/constants';
 import { ageFrom } from '@/lib/dates';
@@ -24,6 +25,7 @@ export default function ProfileTab() {
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState(false);
   const [pm, setPm] = useState<Mode>(me.modes[0]);
+  const openReports = useOpenReports();
   useEffect(() => { setDraft(me); }, [me]);
 
   const dirty = useMemo(() => EDITABLE.some((k) => JSON.stringify(draft[k]) !== JSON.stringify(me[k])), [draft, me]);
@@ -48,7 +50,16 @@ export default function ProfileTab() {
 
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>
-      <TopBar brand title="Profil" right={<IconBtn name="gear" label="Einstellungen" onPress={() => router.push('/settings')} />} />
+      <TopBar brand title="Profil" right={
+        <View>
+          <IconBtn name="gear" label={openReports ? `Einstellungen, ${openReports} offene Meldungen` : 'Einstellungen'} onPress={() => router.push('/settings')} />
+          {openReports > 0 && (
+            <View pointerEvents="none" style={{ position: 'absolute', top: -6, right: -6, minWidth: 22, height: 22, borderRadius: 11, paddingHorizontal: 5, backgroundColor: C.danger, borderWidth: 2, borderColor: C.ink, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={[T.semi(12), { color: C.white }]}>{openReports > 9 ? '9+' : openReports}</Text>
+            </View>
+          )}
+        </View>
+      } />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={{ padding: 16, gap: 18, paddingBottom: 120 }} keyboardShouldPersistTaps="handled">
           {me.paused && (

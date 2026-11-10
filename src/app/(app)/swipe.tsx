@@ -116,6 +116,12 @@ export default function Swipe() {
       <TopBar back onBack={leave} title={event?.title ?? ''} />
       <View style={{ flex: 1, padding: 16, gap: 12 }}>
         {me.modes.length > 1 && <Segmented options={me.modes.map((k) => ({ key: k, label: MODES[k].label }))} value={mode} onChange={setMode} colors={{ friends: C.friends, date: C.date, business: C.business }} />}
+        {!me.photo_path && (
+          <Pressable onPress={() => router.push('/profile')} accessibilityRole="button"
+            style={{ borderWidth: 2, borderColor: C.ink, borderRadius: 12, backgroundColor: C.white, paddingVertical: 8, paddingHorizontal: 12 }}>
+            <Text style={T.body(14)}>📸 Andere sehen dich ohne Foto. <Text style={[T.semi(14), { textDecorationLine: 'underline' }]}>Foto hinzufügen</Text></Text>
+          </Pressable>
+        )}
         {me.paused && <Text style={[T.mono(11), { textAlign: 'center' }]}>Dein Profil ist pausiert. Niemand sieht dich gerade.</Text>}
         {live && !here && (
           <Pressable onPress={() => router.push('/scan')} style={{ backgroundColor: C.green, borderWidth: 2, borderColor: C.ink, borderRadius: 16, padding: 10 }}>

@@ -19,13 +19,14 @@ export default function Onboarding() {
   const withColor = (p: Profile) => ({ ...p, color: p.color === '#D8CDBB' ? AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)] : p.color });
   const [draft, setDraft] = useState<Profile | null>(() => (profile ? withColor(profile) : null));
   const [err, setErr] = useState('');
+  const [nudged, setNudged] = useState(false);
   const [busy, setBusy] = useState(false);
   const [events, setEvents] = useState<EventRow[] | null>(null);
   const [joined, setJoined] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (profile && !draft) setDraft(withColor(profile));
-  }, [profile, draft]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [profile, draft]);
   useEffect(() => {
     if (step !== 3) return;
     const today = new Date().toISOString().slice(0, 10);
@@ -44,6 +45,8 @@ export default function Onboarding() {
     if (step === 1) {
       if (!draft.name.trim()) return setErr('Bitte gib deinen Vornamen ein.');
       if (!draft.birthdate) return setErr('Bitte gib deinen Geburtstag ein. MOSHCHAT ist ab 18.');
+      // Ask once for a photo; the second tap on "Weiter" continues without one.
+      if (!draft.photo_path && !nudged) { setNudged(true); return; }
     }
     if (step === 2) { const m = modeError(draft); if (m) return setErr(m); }
     setBusy(true);
@@ -109,6 +112,12 @@ export default function Onboarding() {
               );
             })}
         </>}
+        {step === 1 && nudged && !draft.photo_path ? (
+          <View style={{ borderWidth: 2.5, borderColor: C.ink, borderRadius: 16, backgroundColor: C.friends, padding: 14, gap: 4 }}>
+            <Text style={T.semi(16)}>📸 Magst du noch ein Foto hinzufügen?</Text>
+            <Text style={T.body(15)}>Mit Foto findest du viel leichter Leute. Tippe oben auf „Foto hinzufügen“, oder tippe nochmal auf „Weiter“, dann geht es ohne Foto weiter.</Text>
+          </View>
+        ) : null}
         {err ? <Text style={[T.semi(15), { color: C.danger }]}>{err}</Text> : null}
         <Btn solid title={step === 3 ? "Los geht's" : 'Weiter'} onPress={step === 3 ? finish : next} loading={busy} style={{ flex: 0 }} />
       </Screen>

@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '@/components/Icon';
 import { ModeChip, ModeChips, alsoMatchText } from '@/components/ModeSettings';
 import { ReportSheet, useToast } from '@/components/ReportSheet';
+import { SafetyCard, SafetySheet } from '@/components/Safety';
 import { Avatar, Btn, IconBtn, Loading, MenuRow, Mono, P, Pill, Row, Sheet, T } from '@/components/ui';
 import { useMe } from '@/lib/auth';
 import { MODES, meetWhen, meetWhere, sortModes, type Mode } from '@/lib/constants';
@@ -28,6 +29,7 @@ export default function Chat() {
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [safety, setSafety] = useState(false);
   const [report, setReport] = useState(false);
   const [profile, setProfile] = useState(false);
   const [meetOpen, setMeetOpen] = useState(meetParam === 'now');
@@ -149,6 +151,7 @@ export default function Chat() {
               <Avatar path={o?.photo_path} name={o?.name ?? '?'} color={o?.color ?? C.sand} size={84} />
               <Mono>Match · {info.modes.map((k) => MODES[k].label).join(' · ')}</Mono>
               {msgs.length === 0 && <P muted style={{ textAlign: 'center' }}>Ihr wollt euch {verbs.length > 1 ? `${verbs.slice(0, -1).join(', ')} und ${verbs[verbs.length - 1]}` : verbs[0]}. Sag Hallo{ev ? ` oder schlag einen Treffpunkt bei ${ev.title} vor` : ''}.</P>}
+              <SafetyCard date={info.modes.includes('date')} onOpen={() => setSafety(true)} />
             </View>
           }
           renderItem={({ item: m }) => {
@@ -211,6 +214,7 @@ export default function Chat() {
       {ev && <MeetSheet visible={meetOpen} onClose={() => setMeetOpen(false)} event={ev} preferNow={meetParam === 'now'}
         onSend={async (m) => { if (await send({ kind: 'meet', meet: m })) setMeetOpen(false); }} />}
 
+      <SafetySheet visible={safety} onClose={() => setSafety(false)} />
       <Sheet visible={menu} onClose={() => setMenu(false)}>
         {o && <MenuRow title={`Profil von ${o.name}`} onPress={() => { setMenu(false); setProfile(true); }} />}
         {ev && <MenuRow title="Zum Event" sub={ev.title} onPress={() => { setMenu(false); router.push({ pathname: '/event/[id]', params: { id: ev.id } }); }} />}
@@ -252,6 +256,7 @@ function MeetSheet({ visible, onClose, event, onSend, preferNow }: { visible: bo
   return (
     <Sheet visible={visible} onClose={onClose} title="Treffpunkt vorschlagen">
       <P muted>{event.title}{event.start_time ? ` · ab ${time(event.start_time)}` : ''}</P>
+      <P style={{ fontSize: 14 }}>🛡️ Am besten an einem belebten Ort, wo ihr euch leicht findet.</P>
       {dayList.length > 0 && (
         <><Mono>Tag</Mono><View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>{dayList.map((d) => <Pill key={d} label={d} color={event.color} active={day === d} onPress={() => setDay(d)} />)}</View></>
       )}
