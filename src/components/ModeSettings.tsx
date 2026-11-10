@@ -46,11 +46,12 @@ function DateBlock({ me, onChange }: { me: Pick<Profile, 'gender' | 'gender_text
       <Segmented options={(Object.keys(GENDER) as Gender[]).map((g) => ({ key: g, label: GENDER[g] }))} value={(me.gender ?? '') as Gender}
         onChange={(g) => onChange({ gender: g })} colors={{ w: C.date, m: C.date, nb: C.date }} />
       <Field label="Genauer beschreiben (optional)" value={me.gender_text} maxLength={40} onChangeText={(t) => onChange({ gender_text: t })} placeholder="z. B. genderfluid" />
-      <Toggle value={me.open_all} onChange={(v) => onChange({ open_all: v, seek: v || seek.length ? seek : ['w', 'm', 'nb'] })}
+      <Toggle value={me.open_all} onChange={(v) => onChange(v ? { open_all: true } : { open_all: false, seek: [] })}
         title="Ich bin offen für alle" sub="Du siehst Frauen, Männer und nicht-binäre Menschen" />
       {!me.open_all && (
         <View style={{ gap: 8 }}>
           <Mono size={11}>Zeig mir</Mono>
+          {!seek.length && <Text style={[T.body(14), { color: C.muted }]}>Tippe an, wen du treffen möchtest. Mehrere sind möglich.</Text>}
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
             {(Object.keys(SEEK) as Gender[]).map((g) => <Pill key={g} label={SEEK[g]} color={C.date} active={seek.includes(g)} onPress={() => toggleSeek(g)} />)}
           </View>
