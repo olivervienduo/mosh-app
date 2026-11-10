@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Linking, Pressable, Text, View } from 'react-native';
+import { Linking, Platform, Pressable, Text, View } from 'react-native';
 import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
 import { cat } from '@/lib/constants';
 import { FEATURES } from '@/lib/features';
@@ -50,8 +50,11 @@ export function EventCard({ e, m, onJoin }: { e: EventRow; m: Membership; onJoin
   const act = primaryAction(e, m);
   const open = () => router.push({ pathname: '/event/[id]', params: { id: e.id } });
   return (
-    <View style={{ borderRadius: 30, overflow: 'hidden', backgroundColor: e.color }}>
-      <Pressable onPress={open} accessibilityRole="button" accessibilityLabel={`Details zu ${e.title}`}><EventImage e={e} /></Pressable>
+    // The whole card opens the event details. The buttons inside keep their own actions.
+    // On the web a button may not contain other buttons, so the card is a plain clickable area there.
+    <Pressable onPress={open} accessibilityRole={Platform.OS === 'web' ? undefined : 'button'} accessibilityLabel={`Details zu ${e.title}`} accessibilityHint="Öffnet die Event-Details"
+      style={({ pressed }) => ({ borderRadius: 30, overflow: 'hidden', backgroundColor: e.color, opacity: pressed ? 0.93 : 1, transform: [{ scale: pressed ? 0.995 : 1 }] })}>
+      <EventImage e={e} />
       <View style={{ padding: 20, gap: 0 }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: 6 }}>
           <Text style={T.display(multi(e) ? 32 : 40)}>{range(e)}</Text>
@@ -70,6 +73,6 @@ export function EventCard({ e, m, onJoin }: { e: EventRow; m: Membership; onJoin
             : <Btn title="Details" onPress={open} />}
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
