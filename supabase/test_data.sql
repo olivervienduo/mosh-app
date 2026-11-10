@@ -1,6 +1,7 @@
 -- MOSHCHAT – Testdaten (NUR zum Testen, nicht für den echten Betrieb)
 --
--- Legt 12 Testpersonen und 5 kommende Events an. Die Testpersonen sind
+-- Legt 12 Testpersonen an und setzt sie in die kommenden Events der App
+-- (zuerst supabase/festivals_2027.sql ausführen). Die Testpersonen sind
 -- schon bei den Events dabei, die Hälfte von ihnen hat dich (das Admin-Konto)
 -- bereits geliked: Wenn du sie beim Swipen zurück-likest, entsteht ein Match.
 -- Deine eigenen Event-Teilnahmen und Swipes werden zurückgesetzt, damit du
@@ -60,19 +61,12 @@ update public.profiles p
        modes = x.modes, lines = x.lines, tags = x.tags, color = x.color, onboarded = true, open_all = true
   from _people x where p.id = x.id;
 
--- 4. Events (alle in der Zukunft) ---------------------------------------------
-create temp table _events (k int, id uuid, title text, category text, color text, starts date, ends date,
-                           t time, venue text, city text, descr text) on commit drop;
-insert into _events values
- (1, gen_random_uuid(), 'Elektro Nacht',           'party',     '#FF7A9C', '2026-11-21', null,         '22:00', 'Rockhouse',            'Salzburg', 'Test-Event: Elektro bis in die Früh.'),
- (2, gen_random_uuid(), 'Nordlicht Quartett live', 'konzert',   '#B9A0F2', '2026-11-28', null,         '20:00', 'ARGEkultur',           'Salzburg', 'Test-Event: Indie-Folk im kleinen Saal.'),
- (3, gen_random_uuid(), 'Startup Night',           'konferenz', '#6F96F0', '2026-11-26', null,         '18:30', 'Impact Hub',           'Wien',     'Test-Event: Pitches, Panels und Networking.'),
- (4, gen_random_uuid(), 'Christkindlmarkt-Treff',  'markt',     '#FFBE4D', '2026-12-05', null,         '17:00', 'Residenzplatz',        'Salzburg', 'Test-Event: Punsch, Maroni und neue Leute.'),
- (5, gen_random_uuid(), 'Silvester am Kapitelplatz','party',    '#3ED08B', '2026-12-31', '2027-01-01', '21:00', 'Kapitelplatz',         'Salzburg', 'Test-Event: Ins neue Jahr feiern.');
-
-insert into public.events (id, creator_id, title, category, color, starts_on, ends_on, start_time, venue, city, description)
-select e.id, (select id from _people where n = 11), e.title, e.category, e.color, e.starts, e.ends, e.t, e.venue, e.city, e.descr
-  from _events e;
+-- 4. Events: die kommenden Events in der App (z. B. aus festivals_2027.sql) --------
+-- Hier werden keine eigenen Events mehr erfunden.
+create temp table _events on commit drop as
+  select id, starts_on as starts, row_number() over (order by starts_on, title) as k
+    from public.events where coalesce(ends_on, starts_on) >= current_date
+   order by starts_on limit 8;
 
 -- Wer geht wohin (jede Testperson ist bei 3 bis 5 Events dabei)
 insert into public.event_members (event_id, user_id)
@@ -95,6 +89,6 @@ commit;
 
 -- Kontrolle
 select (select count(*) from public.profiles p join auth.users u on u.id = p.id where u.email like '%@test.moshchat.invalid') as testpersonen,
-       (select count(*) from public.events e where e.creator_id in (select id from auth.users where email like '%@test.moshchat.invalid')) as test_events,
+       (select count(distinct m.event_id) from public.event_members m join auth.users u on u.id = m.user_id where u.email like '%@test.moshchat.invalid') as events_mit_testpersonen,
        (select count(*) from public.swipes s join auth.users u on u.id = s.swiper_id where u.email like '%@test.moshchat.invalid') as likes_an_dich,
        (select string_agg(m, ', ') from public.profiles p, unnest(p.modes) m where p.is_admin) as deine_modi;
