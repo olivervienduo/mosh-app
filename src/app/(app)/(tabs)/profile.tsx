@@ -1,12 +1,11 @@
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAvoidingView, Pressable, ScrollView, Text, View } from 'react-native';
 import { ModeSettings, modeError } from '@/components/ModeSettings';
 import { PersonCard } from '@/components/PersonCard';
 import { BasicFields, PhotoPicker } from '@/components/ProfileFields';
 import { useToast } from '@/components/ReportSheet';
-import { Btn, H, IconBtn, Mono, Segmented, T, TopBar } from '@/components/ui';
+import { Btn, FullScreen, H, IconBtn, Mono, Segmented, T, TopBar } from '@/components/ui';
 import { useOpenReports } from '@/lib/admin';
 import { useAuth, useMe } from '@/lib/auth';
 import { AVATAR_COLORS, MODES, type Mode } from '@/lib/constants';
@@ -93,20 +92,13 @@ export default function ProfileTab() {
         </View>
       )}
       {/* Full-screen preview: exactly how others see your card when swiping. */}
-      <Modal visible={preview} animationType="slide" onRequestClose={() => setPreview(false)} statusBarTranslucent navigationBarTranslucent>
-        <SafeAreaProvider>
-          <View style={{ flex: 1, backgroundColor: C.paper }}>
-            <TopBar back onBack={() => setPreview(false)} title="Vorschau" />
-            <SafeAreaView edges={['bottom']} style={{ flex: 1, padding: 16, gap: 12 }}>
-              {draft.modes.length > 1 && <Segmented options={draft.modes.map((k) => ({ key: k, label: MODES[k].label }))} value={pm} onChange={setPm} colors={{ friends: C.friends, date: C.date, business: C.business }} />}
-              <View style={{ flex: 1 }}><PersonCard p={card} mode={pm} /></View>
-              <Text style={[T.body(13), { color: C.muted, textAlign: 'center' }]}>
-                So sehen dich andere beim Swipen im Modus {MODES[pm].label}.{dirty ? ' Noch nicht gespeicherte Änderungen sind schon zu sehen.' : ''}
-              </Text>
-            </SafeAreaView>
-          </View>
-        </SafeAreaProvider>
-      </Modal>
+      <FullScreen visible={preview} onClose={() => setPreview(false)} title="Vorschau" scroll={false}>
+        {draft.modes.length > 1 && <Segmented options={draft.modes.map((k) => ({ key: k, label: MODES[k].label }))} value={pm} onChange={setPm} colors={{ friends: C.friends, date: C.date, business: C.business }} />}
+        <View style={{ flex: 1 }}><PersonCard p={card} mode={pm} /></View>
+        <Text style={[T.body(13), { color: C.muted, textAlign: 'center' }]}>
+          So sehen dich andere beim Swipen im Modus {MODES[pm].label}.{dirty ? ' Noch nicht gespeicherte Änderungen sind schon zu sehen.' : ''}
+        </Text>
+      </FullScreen>
       {toast.node}
     </View>
   );

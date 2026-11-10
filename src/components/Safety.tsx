@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from 'react-native';
-import { H, P, Sheet, T } from '@/components/ui';
+import { FullScreen, H, P, T } from '@/components/ui';
 import { C } from '@/lib/theme';
 
 export const SAFETY_TIPS: [string, string][] = [
@@ -13,12 +13,13 @@ export const SAFETY_TIPS: [string, string][] = [
 /** The full safety tips and community rules. */
 export function SafetySheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   return (
-    <Sheet visible={visible} onClose={onClose} title="Sicher treffen">
+    <FullScreen visible={visible} onClose={onClose} title="Sicher treffen">
+      <H size={40}>Sicher treffen</H>
       {SAFETY_TIPS.map(([t, d]) => <View key={t} style={{ gap: 2 }}><Text style={T.semi(17)}>{t}</Text><P muted style={{ fontSize: 15 }}>{d}</P></View>)}
       <H size={22} style={{ marginTop: 8 }}>Community-Regeln</H>
       <P style={{ fontSize: 15 }}>MOSHCHAT ist ab 18. Sei du selbst: echte Fotos, echter Name. Kein Hass, keine Belästigung, keine Nacktbilder, kein Spam, kein Verkauf. Respektiere ein Nein und Pronomen. Verstöße führen zur Sperre.</P>
       <P muted style={{ fontSize: 14 }}>In einem Notfall: 112.</P>
-    </Sheet>
+    </FullScreen>
   );
 }
 

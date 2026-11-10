@@ -5,7 +5,7 @@ import {
   ActivityIndicator, Keyboard, KeyboardAvoidingView, type ScrollViewInstance, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
   type StyleProp, type TextInputProps, type TextStyle, type ViewStyle,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { publicUrl } from '@/lib/supabase';
 import { BORDER, C, F } from '@/lib/theme';
@@ -183,6 +183,27 @@ export function FadeEdge({ height = 38, color = C.paper }: { height?: number; co
         <Rect x="0" y="0" width="100%" height="100%" fill="url(#fade)" />
       </Svg>
     </View>
+  );
+}
+
+/**
+ * A full-screen page on top of the current screen, with a back arrow.
+ * The Android back gesture closes it too. Content scrolls unless scroll={false}.
+ */
+export function FullScreen({ visible, onClose, title, children, scroll = true }: { visible: boolean; onClose: () => void; title: string; children: ReactNode; scroll?: boolean }) {
+  return (
+    <Modal visible={visible} animationType="slide" onRequestClose={onClose} statusBarTranslucent navigationBarTranslucent>
+      <SafeAreaProvider>
+        <View style={{ flex: 1, backgroundColor: C.paper }}>
+          <TopBar back onBack={onClose} title={title} />
+          <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
+            {scroll
+              ? <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32, gap: 14 }}>{children}</ScrollView>
+              : <View style={{ flex: 1, padding: 16, gap: 12 }}>{children}</View>}
+          </SafeAreaView>
+        </View>
+      </SafeAreaProvider>
+    </Modal>
   );
 }
 
