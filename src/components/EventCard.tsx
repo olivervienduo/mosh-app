@@ -10,7 +10,7 @@ import type { EventRow } from '@/lib/types';
 import { C } from '@/lib/theme';
 import { Btn, Dash, LivePill, Rule, T } from './ui';
 
-export function Halftone({ height = 190, radius = 0 }: { height?: number; radius?: number }) {
+export function Halftone({ height = 190, radius = 0 }: { height?: number | `${number}%`; radius?: number }) {
   return (
     <Svg width="100%" height={height} style={{ borderTopLeftRadius: radius, borderTopRightRadius: radius }}>
       <Defs>
