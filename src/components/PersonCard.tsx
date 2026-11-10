@@ -22,7 +22,7 @@ export function PersonCard({ p, mode, yes = 0, no = 0 }: { p: DeckCard; mode: Mo
           </View>
         )}
         <Animated.Text style={[T.display(26), stamp, { left: 20, transform: [{ rotate: '-10deg' }], opacity: yes }]}>{MODES[mode].yes}</Animated.Text>
-        <Animated.Text style={[T.display(26), stamp, { right: 20, transform: [{ rotate: '10deg' }], opacity: no }]}>Weiter</Animated.Text>
+        <Animated.Text style={[T.display(26), stamp, { right: 20, transform: [{ rotate: '10deg' }], opacity: no }]}>Eher nicht</Animated.Text>
       </View>
       {/* Text area: always a solid colour, never the dot pattern, so the text stays readable. */}
       <View style={{ padding: 18, paddingBottom: 20, borderTopWidth: 3, borderColor: C.ink, gap: 6, backgroundColor: MODES[mode].color, zIndex: 1 }}>

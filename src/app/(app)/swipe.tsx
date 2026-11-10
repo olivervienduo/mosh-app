@@ -156,7 +156,7 @@ export default function Swipe() {
             style={{ width: 54, borderWidth: 2.5, borderColor: C.ink, borderRadius: 4, alignItems: 'center', justifyContent: 'center', opacity: !last || last.matched ? 0.3 : 1 }}>
             <Icon name="undo" />
           </Pressable>
-          <Btn title="Weiter" onPress={() => decide(false)} disabled={!deck?.length} />
+          <Btn title="Eher nicht" onPress={() => decide(false)} disabled={!deck?.length} />
           <Btn solid title={MODES[mode].yes} onPress={() => decide(true)} disabled={!deck?.length} style={{ flex: 1.4 }} />
         </SafeAreaView>
       </View>
