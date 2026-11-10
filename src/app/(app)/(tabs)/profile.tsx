@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, Text, View } from 'react-native';
 import { ModeSettings, modeError } from '@/components/ModeSettings';
 import { PersonCard } from '@/components/PersonCard';
 import { BasicFields, PhotoPicker } from '@/components/ProfileFields';
@@ -48,7 +48,7 @@ export default function ProfileTab() {
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>
       <TopBar brand title="Profil" right={<IconBtn name="gear" label="Einstellungen" onPress={() => router.push('/settings')} />} />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={{ padding: 16, gap: 18, paddingBottom: 120 }} keyboardShouldPersistTaps="handled">
           {me.paused && (
             <Pressable onPress={() => router.push('/settings')} style={{ borderWidth: 2.5, borderColor: C.ink, borderRadius: 16, backgroundColor: C.friends, padding: 12 }}>

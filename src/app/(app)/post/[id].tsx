@@ -98,7 +98,7 @@ function PostDetail() {
   return (
     <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: C.paper }}>
       <TopBar back title="Beitrag" />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
         <ScrollView contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
           <PostCard post={post} detail onChange={setPost} onRemove={() => router.back()} />
           {comments.length > 1 && <Segmented options={[{ key: 'top', label: 'Relevanteste' }, { key: 'new', label: 'Neueste' }]} value={sort} onChange={setSort} />}

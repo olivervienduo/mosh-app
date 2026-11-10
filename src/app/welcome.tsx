@@ -1,5 +1,5 @@
 import { Redirect, router } from 'expo-router';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Btn, H, P, Rule, T } from '@/components/ui';
 import { MODE_KEYS, MODES } from '@/lib/constants';
@@ -14,10 +14,12 @@ const STEPS: [string, string][] = [
 
 export default function Welcome() {
   const { session } = useAuth();
+  const { width } = useWindowDimensions();
   if (session) return <Redirect href="/" />;
+  const headline = Math.min(58, Math.max(40, Math.round(width * 0.13)));
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: C.paper }}>
-      <View style={{ flex: 1, padding: 20, gap: 22, justifyContent: 'center' }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 20, paddingTop: 28, paddingBottom: 32, gap: 22, justifyContent: 'center' }} showsVerticalScrollIndicator={false}>
         <H size={30}>MOSHCHAT</H>
         <View style={{ flexDirection: 'row', gap: 10, flexWrap: 'wrap' }}>
           {MODE_KEYS.map((k, i) => (
@@ -26,7 +28,7 @@ export default function Welcome() {
             </View>
           ))}
         </View>
-        <H size={58}>Triff deine Leute auf Events.</H>
+        <H size={headline}>Triff deine Leute auf Events.</H>
         <P>MOSHCHAT verbindet Menschen, die zum selben Konzert, Festival, Spiel oder zur selben Messe gehen. Als Freunde, als Date oder beruflich.</P>
         <View>
           <Rule />
@@ -41,7 +43,7 @@ export default function Welcome() {
           <Btn solid title="Konto erstellen" onPress={() => router.push({ pathname: '/sign-in', params: { mode: 'signup' } })} style={{ flex: 0 }} />
           <Btn title="Anmelden" onPress={() => router.push('/sign-in')} style={{ flex: 0 }} />
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

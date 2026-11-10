@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Icon } from '@/components/Icon';
 import { Btn, Field, Mono, P, T, Toggle, TopBar } from '@/components/ui';
 import { useMe } from '@/lib/auth';
@@ -66,7 +66,7 @@ function Compose() {
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>
       <TopBar back title="Neuer Beitrag" />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 60 }} keyboardShouldPersistTaps="handled">
           {event && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>

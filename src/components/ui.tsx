@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import { type ReactNode } from 'react';
 import {
-  ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
+  ActivityIndicator, KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
   type StyleProp, type TextInputProps, type TextStyle, type ViewStyle,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,7 +27,7 @@ export function Screen({ children, scroll = true, style, footer }: { children: R
     ? <ScrollView contentContainerStyle={[{ padding: 16, paddingBottom: 40, gap: 18 }, style]} keyboardShouldPersistTaps="handled">{children}</ScrollView>
     : <View style={[{ flex: 1 }, style]}>{children}</View>;
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: C.paper }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: C.paper }} behavior="padding">
       {body}
       {footer}
     </KeyboardAvoidingView>
@@ -63,7 +63,7 @@ export function Btn({ title, onPress, solid, small, disabled, loading, style, co
 }) {
   return (
     <Pressable accessibilityRole="button" accessibilityState={{ disabled: !!disabled }} disabled={disabled || loading} onPress={onPress}
-      style={({ pressed }) => [s.btn, small && s.btnSmall, solid && { backgroundColor: C.ink }, color ? { backgroundColor: color } : null,
+      style={({ pressed }) => [s.btn, small ? s.btnSmall : { flex: 1 }, solid && { backgroundColor: C.ink }, color ? { backgroundColor: color } : null,
         (disabled || loading) && { opacity: 0.35 }, pressed && { transform: [{ translateY: 1 }] }, style]}>
       {loading ? <ActivityIndicator color={solid ? C.white : C.ink} /> :
         <Text style={[T.semi(small ? 14 : 16), solid && !color && { color: C.white }, { textAlign: 'center' }]}>{title}</Text>}
@@ -182,7 +182,7 @@ export function Sheet({ visible, onClose, children, title }: { visible: boolean;
   const insets = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <Pressable style={{ flex: 1, backgroundColor: 'rgba(21,20,19,0.5)' }} onPress={onClose} accessibilityLabel="Schließen" />
         <View style={[s.sheet, { paddingBottom: 20 + insets.bottom }]}>
           <ScrollView contentContainerStyle={{ gap: 14 }} keyboardShouldPersistTaps="handled">
@@ -211,8 +211,8 @@ export function MenuRow({ title, sub, onPress, danger }: { title: string; sub?: 
 export const s = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: 3, borderColor: C.ink, minHeight: 62 },
   iconBtn: { borderWidth: BORDER, borderColor: C.ink, borderRadius: 4, alignItems: 'center', justifyContent: 'center' },
-  btn: { borderWidth: BORDER, borderColor: C.ink, borderRadius: 4, paddingVertical: 14, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center', flex: 1 },
-  btnSmall: { paddingVertical: 8, flexGrow: 0, flexShrink: 0, flexBasis: 'auto', paddingHorizontal: 14 },
+  btn: { borderWidth: BORDER, borderColor: C.ink, borderRadius: 4, paddingVertical: 14, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center' },
+  btnSmall: { paddingVertical: 8, paddingHorizontal: 14, flexShrink: 0 },
   pill: { borderWidth: BORDER, borderColor: C.ink, borderRadius: 999, paddingVertical: 8, paddingHorizontal: 14 },
   chip: { borderWidth: 2, borderColor: C.ink, borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start' },
   seg: { flexDirection: 'row', borderWidth: BORDER, borderColor: C.ink, borderRadius: 999, overflow: 'hidden', backgroundColor: C.white },
