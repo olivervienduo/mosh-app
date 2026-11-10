@@ -75,15 +75,15 @@ export default function Events() {
   return (
     <View style={{ flex: 1, backgroundColor: C.paper }}>
       <TopBar brand title="Events" right={<Btn small solid title="+ Event" onPress={() => router.push('/event/edit')} />} />
-      <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 6, backgroundColor: C.paper, zIndex: 2 }}>
+      <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 2 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 2.5, borderColor: C.ink, borderRadius: 999, backgroundColor: C.white, paddingHorizontal: 14 }}>
           <Icon name="search" size={20} />
           <TextInput value={q} onChangeText={setQ} placeholder="Events, Orte oder Städte suchen" placeholderTextColor="#8a8378" returnKeyType="search"
             onSubmitEditing={reload} onEndEditing={reload} style={{ flex: 1, fontFamily: F.bodyMedium, fontSize: 16, paddingVertical: 11, paddingHorizontal: 10, color: C.ink }} />
           {q ? <Pressable onPress={() => { setQ(''); setTimeout(reload, 0); }} accessibilityLabel="Suche leeren"><Icon name="close" size={18} /></Pressable> : null}
         </View>
-        <FadeEdge />
       </View>
+      <View style={{ flex: 1 }}>
       <ScrollView ref={scroll} contentContainerStyle={{ padding: 16, paddingTop: 34, gap: 18, paddingBottom: 40 }}
         refreshControl={<RefreshControl refreshing={loading && !!data} onRefresh={reload} />}
         onContentSizeChange={() => {
@@ -103,6 +103,8 @@ export default function Events() {
           </View>
         ))}
       </ScrollView>
+        <FadeEdge />
+      </View>
     </View>
   );
 }

@@ -164,12 +164,14 @@ export function Field({ label, hint, error, ...props }: TextInputProps & { label
 }
 
 /**
- * Soft fade below a fixed header area: the paper colour runs a little further
- * down over the scrolling content and then fades out, instead of a hard edge.
+ * Soft fade at the top edge of a scrolling area: the paper colour runs a little
+ * further down over the content and then fades out, instead of a hard edge.
+ * Place it as the last child of a container that wraps the ScrollView; it pins to
+ * that container's top (fixed pixels, no percentages, so Android places it the same).
  */
 export function FadeEdge({ height = 38, color = C.paper }: { height?: number; color?: string }) {
   return (
-    <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, top: '100%', height }}>
+    <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, top: 0, height }}>
       <Svg width="100%" height="100%" preserveAspectRatio="none">
         <Defs>
           <LinearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
