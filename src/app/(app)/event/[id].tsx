@@ -2,6 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Linking, ScrollView, Text, View } from 'react-native';
 import { EventImage, primaryAction } from '@/components/EventCard';
+import { useJoinCelebration } from '@/components/JoinCelebration';
 import { ReportSheet, useToast } from '@/components/ReportSheet';
 import { Btn, Dash, Faces, H, IconBtn, LivePill, Loading, MenuRow, Mono, P, Rule, Sheet, T, Toggle, TopBar } from '@/components/ui';
 import { useMe } from '@/lib/auth';
@@ -17,6 +18,7 @@ export default function EventDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const me = useMe();
   const toast = useToast();
+  const party = useJoinCelebration();
   const [menu, setMenu] = useState(false);
   const [report, setReport] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -39,7 +41,7 @@ export default function EventDetail() {
 
   const join = async () => {
     setBusy(true);
-    try { await joinEvent(e.id, me.id); toast.show(isPast(e) ? 'Gespeichert. Jetzt Leute vom Event treffen.' : 'Du bist dabei.'); await reload(); }
+    try { await joinEvent(e.id, me.id); party.celebrate(e); await reload(); }
     catch (x) { toast.show(errorText(x)); } finally { setBusy(false); }
   };
   const leave = async () => { setMenu(false); await leaveEvent(e.id, me.id); toast.show('Du bist nicht mehr dabei.'); reload(); };
@@ -100,7 +102,7 @@ export default function EventDetail() {
             </View>
 
             <View style={{ gap: 12, marginTop: 18 }}>
-              {joined ? <Btn solid title={act.title} onPress={act.onPress} style={{ flex: 0 }} /> : <Btn solid title={isPast(e) ? 'Ich war dabei' : 'Beitreten'} onPress={join} loading={busy} style={{ flex: 0 }} />}
+              {joined ? <Btn solid title={act.title} onPress={act.onPress} style={{ flex: 0 }} /> : <Btn title={isPast(e) ? 'Ich war dabei' : 'Beitreten'} onPress={join} loading={busy} style={{ flex: 0, backgroundColor: C.white }} />}
               {e.ticket_url && !isPast(e) && <Btn title="Tickets" onPress={() => Linking.openURL(e.ticket_url!)} style={{ flex: 0 }} />}
             </View>
 
@@ -135,6 +137,7 @@ export default function EventDetail() {
       </Sheet>
       <ReportSheet target={{ event: e.id }} visible={report} onClose={() => setReport(false)} onDone={(m) => { setReport(false); toast.show(m); }} />
       {toast.node}
+      {party.node}
     </View>
   );
 }

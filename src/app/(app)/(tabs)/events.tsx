@@ -7,6 +7,7 @@ import { Btn, Empty, Faces, FadeEdge, LivePill, Mono, SectionHead, T, TopBar } f
 import { useMe } from '@/lib/auth';
 import { isLive, isPast, monthKey, time } from '@/lib/dates';
 import { FEATURES } from '@/lib/features';
+import { useJoinCelebration } from '@/components/JoinCelebration';
 import { fetchEvents, fetchMemberships, fetchPeople, joinEvent, useFocusLoad, type MemberMap } from '@/lib/events';
 import type { EventRow, People } from '@/lib/types';
 import { C, F } from '@/lib/theme';
@@ -39,6 +40,7 @@ function LiveBanner({ e, people, here }: { e: EventRow; people: People | null; h
 
 export default function Events() {
   const me = useMe();
+  const party = useJoinCelebration();
   const [q, setQ] = useState('');
   const scroll = useRef<ScrollViewInstance>(null);
   const anchorY = useRef<number | null>(null);
@@ -99,12 +101,13 @@ export default function Events() {
             {gi === firstCurrent && gi > 0 && !q && <Mono style={{ textAlign: 'center', color: C.muted }}>↑ Vergangene Events</Mono>}
             {gi === firstCurrent && !q && (data?.live ?? []).map((e) => <LiveBanner key={e.id} e={e} people={data?.people[e.id] ?? null} here={!!mem[e.id]?.here} />)}
             <SectionHead title={g.key} right={<Mono style={{ color: C.muted }}>{g.items.length} {g.items.length === 1 ? 'Event' : 'Events'}</Mono>} />
-            {g.items.map((e) => <EventCard key={e.id} e={e} m={{ joined: !!mem[e.id], here: !!mem[e.id]?.here }} onJoin={() => joinEvent(e.id, me.id).then(reload).catch(() => {})} />)}
+            {g.items.map((e) => <EventCard key={e.id} e={e} m={{ joined: !!mem[e.id], here: !!mem[e.id]?.here }} onJoin={() => joinEvent(e.id, me.id).then(() => { party.celebrate(e); reload(); }).catch(() => {})} />)}
           </View>
         ))}
       </ScrollView>
         <FadeEdge />
       </View>
+      {party.node}
     </View>
   );
 }

@@ -63,7 +63,8 @@ export function EventCard({ e, m, onJoin }: { e: EventRow; m: Membership; onJoin
         <Text style={T.display(20)}>{longDate(e)}</Text>
         <Text style={[T.mono(13), { textTransform: 'none', letterSpacing: 0, marginTop: 6 }]}>{e.venue}{e.city ? ` — ${e.city}` : ''}</Text>
         <View style={{ flexDirection: 'row', gap: 12, marginTop: 16 }}>
-          <Btn solid title={act.title} onPress={!m.joined && onJoin ? onJoin : act.onPress} />
+          {/* Not joined yet: white button. After joining it turns into the black "Leute treffen" button. */}
+          <Btn solid={m.joined} title={act.title} onPress={!m.joined && onJoin ? onJoin : act.onPress} style={m.joined ? undefined : { backgroundColor: C.white }} />
           {e.ticket_url && !isPast(e)
             ? <Btn title="Tickets" onPress={() => Linking.openURL(e.ticket_url!)} />
             : <Btn title="Details" onPress={open} />}
