@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
-import { type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import {
-  ActivityIndicator, KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
+  ActivityIndicator, Keyboard, KeyboardAvoidingView, type ScrollViewInstance, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
   type StyleProp, type TextInputProps, type TextStyle, type ViewStyle,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -22,9 +22,48 @@ export const H = ({ children, size = 30, style }: { children: ReactNode; size?: 
 export const P = ({ children, style, muted }: { children: ReactNode; style?: StyleProp<TextStyle>; muted?: boolean }) => <Text style={[T.body(), muted && { color: C.muted }, style]}>{children}</Text>;
 
 // ---------- layout ----------
+/**
+ * Keeps the focused text field visible above the keyboard inside a ScrollView.
+ * Android (edge-to-edge) no longer resizes the window for the keyboard, so we scroll ourselves.
+ */
+/** Screens that want the focused field revealed (used when the keyboard is already open). */
+const revealers = new Set<() => void>();
+
+function useKeepFocusedVisible() {
+  const ref = useRef<ScrollViewInstance>(null);
+  const offset = useRef(0);
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    const reveal = () => setTimeout(() => {
+      const input = TextInput.State.currentlyFocusedInput?.();
+      const sv = ref.current as unknown as { getNativeScrollRef?: () => unknown; scrollTo: (o: { y: number; animated?: boolean }) => void } | null;
+      if (!input || !sv) return;
+      const host = (sv.getNativeScrollRef?.() ?? sv) as { measureInWindow?: (cb: (x: number, y: number, w: number, h: number) => void) => void };
+      if (!host.measureInWindow) return;
+      host.measureInWindow((_sx, svTop, _sw, svHeight) => {
+        input.measureInWindow((_x, y, _w, h) => {
+          const visibleBottom = svTop + svHeight;
+          if (y + h > visibleBottom - 24) sv.scrollTo({ y: offset.current + (y + h - visibleBottom) + 48, animated: true });
+          else if (y < svTop + 8) sv.scrollTo({ y: Math.max(0, offset.current - (svTop - y) - 24), animated: true });
+        });
+      });
+    }, Platform.OS === 'android' ? 150 : 30);
+    const subs = [Keyboard.addListener('keyboardDidShow', reveal)];
+    const onFocus = () => { if (Keyboard.isVisible()) reveal(); };
+    revealers.add(onFocus);
+    return () => { subs.forEach((x) => x.remove()); revealers.delete(onFocus); };
+  }, []);
+  return {
+    ref,
+    onScroll: (e: { nativeEvent: { contentOffset: { y: number } } }) => { offset.current = e.nativeEvent.contentOffset.y; },
+    scrollEventThrottle: 32,
+  };
+}
+
 export function Screen({ children, scroll = true, style, footer }: { children: ReactNode; scroll?: boolean; style?: StyleProp<ViewStyle>; footer?: ReactNode }) {
+  const keep = useKeepFocusedVisible();
   const body = scroll
-    ? <ScrollView contentContainerStyle={[{ padding: 16, paddingBottom: 40, gap: 18 }, style]} keyboardShouldPersistTaps="handled">{children}</ScrollView>
+    ? <ScrollView {...keep} contentContainerStyle={[{ padding: 16, paddingBottom: 40, gap: 18 }, style]} keyboardShouldPersistTaps="handled">{children}</ScrollView>
     : <View style={[{ flex: 1 }, style]}>{children}</View>;
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: C.paper }} behavior="padding">
@@ -42,7 +81,7 @@ export function TopBar({ title, back = false, right, brand }: { title?: string; 
         {brand
           ? <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 8 }}><H size={30}>MOSHCHAT</H>{title ? <Mono style={{ color: C.muted }}>/ {title}</Mono> : null}</View>
           : <Text numberOfLines={1} style={[T.mono(13), { flex: 1 }]}>{title}</Text>}
-        {right}
+        {right ? <View style={{ flexShrink: 0, flexGrow: 0 }}>{right}</View> : null}
       </View>
     </SafeAreaView>
   );
@@ -116,7 +155,7 @@ export function Field({ label, hint, error, ...props }: TextInputProps & { label
   return (
     <View style={{ gap: 6 }}>
       <Mono size={11}>{label}</Mono>
-      <TextInput placeholderTextColor="#8a8378" {...props} style={[s.input, props.multiline && { minHeight: 100, textAlignVertical: 'top' }, props.style]} />
+      <TextInput placeholderTextColor="#8a8378" {...props} onFocus={(e) => { props.onFocus?.(e); revealers.forEach((r) => r()); }} style={[s.input, props.multiline && { minHeight: 100, textAlignVertical: 'top' }, props.style]} />
       {hint ? <Text style={[T.body(13), { color: C.muted }]}>{hint}</Text> : null}
       {error ? <Text style={[T.semi(14), { color: C.danger }]}>{error}</Text> : null}
     </View>
